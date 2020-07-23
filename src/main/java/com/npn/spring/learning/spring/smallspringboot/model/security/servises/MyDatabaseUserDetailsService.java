@@ -1,16 +1,19 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security.servises;
 
+import com.npn.spring.learning.spring.smallspringboot.model.dbservices.implementation.UserService;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
-import com.npn.spring.learning.spring.smallspringboot.model.security.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * Раелизация UserDetailsService для авториазции пользователей
+ */
 public class MyDatabaseUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UsersRepository usersRepository;
+    UserService userService;
 
     /**
      * Поиск пользователя по имени пользователя, регистр игнорируется (имя приводится к нижнему регистру).
@@ -22,7 +25,7 @@ public class MyDatabaseUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user= usersRepository.findByName(username.toLowerCase());
+        User user= userService.findByName(username);
         if (user == null) throw new UsernameNotFoundException("User "+username+" not found");
         return user;
     }

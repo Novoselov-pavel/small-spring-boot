@@ -1,7 +1,5 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -9,16 +7,19 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * Класс определяющий пользователя
+ */
 @Entity
 @Table(name="usrs")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name="user_name")
+    @Column(name="user_name",unique = true, nullable = false)
     private String name;
 
     @Column(name = "user_display_name")
@@ -26,9 +27,6 @@ public class User implements UserDetails {
 
     @Column(name = "pass_hash")
     private String password;
-
-    @Column(name = "pass_salt")
-    private String passwordSalt;
 
     @Column(name = "account_non_expired")
     private boolean accountNonExpired;
@@ -44,12 +42,24 @@ public class User implements UserDetails {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usrs_authority",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns =@JoinColumn(name = "role_id") )
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns =@JoinColumn(name = "role_id", referencedColumnName = "id") )
     private final Set<MyUserAuthority> authorities = new CopyOnWriteArraySet();
 
+    public User() {
+    }
 
-
+    public User(String name, String displayName, String password,
+                boolean accountNonExpired, boolean accountNonLocked,
+                boolean credentialsNonExpired, boolean enabled) {
+        this.name = name;
+        this.displayName = displayName;
+        this.password = password;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
+    }
 
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.
@@ -139,10 +149,6 @@ public class User implements UserDetails {
         return displayName;
     }
 
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
     public Long getId() {
         return id;
     }
@@ -163,10 +169,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
     public void setAccountNonExpired(boolean accountNonExpired) {
         this.accountNonExpired = accountNonExpired;
     }
@@ -181,6 +183,10 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void addAuthority(MyUserAuthority authority) {
+        authorities.add(authority);
     }
 
 }

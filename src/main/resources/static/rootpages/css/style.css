@@ -1,0 +1,21 @@
+.myBlock {
+    display: block;
+    border-width: 2px;
+    border-color: black;
+    background-color: #8febe8;
+    min-width: 400px;
+    max-width: 600px;
+    padding: 5px;
+    margin: auto;
+}
+
+.center-screen {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    overflow: auto;
+
+}

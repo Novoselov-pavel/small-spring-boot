@@ -8,13 +8,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * Класс определяющий роли пользователя
+ */
 @Entity
 @Table(name = "users_roles")
 public class MyUserAuthority implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", updatable = false, nullable = false)
     private long id;
 
     @Column(name="role_name")
@@ -22,8 +25,8 @@ public class MyUserAuthority implements GrantedAuthority {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usrs_authority",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns =@JoinColumn(name = "user_id") )
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns =@JoinColumn(name = "user_id", referencedColumnName = "id") )
     private final Set<User> authorities = new CopyOnWriteArraySet();
 
     public long getId() {
