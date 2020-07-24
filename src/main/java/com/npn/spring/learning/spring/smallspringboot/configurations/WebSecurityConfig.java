@@ -4,18 +4,19 @@ import com.npn.spring.learning.spring.smallspringboot.model.security.servises.My
 import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyDatabaseUserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -50,12 +51,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll().and()
                 .logout()
                 .permitAll().deleteCookies("JSESSIONID")
-                .and().httpBasic()
-                .and()
-                .sessionManagement()
+                .and().httpBasic().and()
+                .sessionManagement() // реализация позможности захода только с одного адреса,для корректной работы нужно в пользователе
+                                     // правильно реальзовать equals и hashCode
                 .maximumSessions(1)
-                .expiredUrl("/login");
-
+                .maxSessionsPreventsLogin(false)
+                .expiredUrl("/login")
+                .sessionRegistry(sessionRegistry());
     }
 
 
@@ -70,24 +72,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Временная реализация-заместитель проверки пароля
-     * @return
+     * Предоставление шифровальщика паролей BCrypt
+     * @return PasswordEncoder
      */
     @Bean("passwordEncoder")
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
-
-//        return new PasswordEncoder() {
-//            @Override
-//            public String encode(CharSequence rawPassword) {
-//                return rawPassword.toString();
-//            }
-//
-//            @Override
-//            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-//                return rawPassword.toString().equals(encodedPassword);
-//            }
-//        };
     }
+
+    /**
+     * Регистрация реестра сеансов, для осуществления возможности входа одновременно только с одного адреса
+     * @return SessionRegistry
+     */
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        SessionRegistry sessionRegistry = new SessionRegistryImpl();
+        return sessionRegistry;
+    }
+
+    /**
+     * Слушатель сессий, для осуществления возможности входа одновременно только с одного адреса
+     *
+     * @return ServletListenerRegistrationBean
+     */
+    @Bean
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
+    }
+
+
 
 }

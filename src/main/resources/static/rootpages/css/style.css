@@ -19,3 +19,15 @@
     overflow: auto;
 
 }
+
+.flex-button-container {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+.my-button {
+    flex-grow: 1;
+    margin: 5px;
+    flex-basis: 0.5em;
+}
