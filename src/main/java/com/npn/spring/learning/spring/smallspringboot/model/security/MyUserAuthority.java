@@ -23,7 +23,7 @@ public class MyUserAuthority implements GrantedAuthority {
     @Column(name="role_name")
     private String role;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usrs_authority",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns =@JoinColumn(name = "user_id", referencedColumnName = "id") )
@@ -42,7 +42,11 @@ public class MyUserAuthority implements GrantedAuthority {
     }
 
     public void setRole(String role) {
-        this.role = role;
+        this.role = role.toUpperCase();
+    }
+
+    public void setRole(UsersRoles role) {
+        this.role = role.name();
     }
 
     @Override

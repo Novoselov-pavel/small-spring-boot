@@ -6,6 +6,7 @@ public class HtmlThymeleafPage {
     private String fragmentName;
     private boolean hideMessage = true;
     private String message;
+    private String navName;
 
     public static String getThymeleafObjectName() {
         return thymeleafObjectName;
@@ -41,5 +42,13 @@ public class HtmlThymeleafPage {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getNavName() {
+        return navName;
+    }
+
+    public void setNavName(String navName) {
+        this.navName = navName;
     }
 }

@@ -1,0 +1,13 @@
+package com.npn.spring.learning.spring.smallspringboot.model.repositories;
+
+import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface HtmlNavElementsRepository extends JpaRepository<HtmlNavElement, Long> {
+    HtmlNavElement findFirstByName(String name);
+
+    List<HtmlNavElement> findByParentIsNull();
+
+}

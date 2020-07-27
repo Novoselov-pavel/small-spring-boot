@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
- * Раелизация UserDetailsService для авториазции пользователей
+ * Реализация UserDetailsService для авторизации пользователей
  */
 public class MyDatabaseUserDetailsService implements UserDetailsService {
 

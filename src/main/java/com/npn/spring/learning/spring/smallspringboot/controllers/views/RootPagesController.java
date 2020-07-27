@@ -35,8 +35,7 @@ public class RootPagesController {
         insertHomeInBlankPage(model);
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (object instanceof User) {
-            User currentUser = (User) object;
-            return "redirect:/user/"+currentUser.getId();
+            return "redirect:/user/";
         }
         return "views/BlankPage";
     }
