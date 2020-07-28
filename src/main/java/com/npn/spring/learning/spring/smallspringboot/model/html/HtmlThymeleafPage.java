@@ -1,5 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html;
 
+import java.util.List;
+
 public class HtmlThymeleafPage {
     private static final String thymeleafObjectName = "htmlThymeleafPage";
     private String title;
@@ -7,6 +9,7 @@ public class HtmlThymeleafPage {
     private boolean hideMessage = true;
     private String message;
     private String navName;
+    private List<HtmlNavElement> navElements;
 
     public static String getThymeleafObjectName() {
         return thymeleafObjectName;
@@ -50,5 +53,13 @@ public class HtmlThymeleafPage {
 
     public void setNavName(String navName) {
         this.navName = navName;
+    }
+
+    public List<HtmlNavElement> getNavElements() {
+        return navElements;
+    }
+
+    public void setNavElements(List<HtmlNavElement> navElements) {
+        this.navElements = navElements;
     }
 }

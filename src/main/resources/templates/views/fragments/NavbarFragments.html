@@ -12,33 +12,36 @@
     <link rel="stylesheet" href="../../../static/rootpages/css/style.css" th:href="@{static/rootpages/css/style.css}">
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-light my-color" th:fragment="mainNav">
+<nav class="navbar navbar-expand-md navbar-dark nav-my-style" th:fragment="mainNav">
     <a class="navbar-brand" href="/">Логотип</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navBarRequest" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    GET и POST запросы
-                </a>
-                <div class="dropdown-menu my-color" aria-labelledby="navBarRequest">
-                    <tr th:each="page : ${pages}">
-                        <td><a class="dropdown-item my-color" th:href="${page.href}" th:text="${page.name}"></a></td>
-                    </tr>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navBarOperation" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Шаблонные задачи
-                </a>
-                <div class="dropdown-menu my-color" aria-labelledby="navBarOperation">
-                    <tr th:each="operation : ${operations}">
-                        <td><a class="dropdown-item my-color" th:href="${operation.href}" th:text="${operation.name}"></a></td>
-                    </tr>
-                </div>
-            </li>
+            <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+            <tr th:each="element : ${htmlThymeleafPage.getNavElements()}">
+                <td th:switch="${element.getType()}">
+                    <li th:case="'MENU'" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           th:id="${element.getName()}" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" th:text="${element.getDescription()}">
+                            Menu
+                        </a>
+                        <div class="dropdown-menu my-color" th:attr="aria-labelledby=${element.getName()}">
+                            <div th:each="page : ${element.getChildren()}">
+                                <a th:if="${page.getType().equals('ELEMENT')}" class="dropdown-item my-color"
+                                    th:href="${page.getHref()}" th:text="${page.getDescription()}"></a>
+                                <div th:if="${page.getType().equals('DIVIDER')}" class="dropdown-divider"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li th:case="'ELEMENT'" class="nav-item">
+                        <a class="nav-link" href="#" th:href="${element.getHref()}" th:text="${element.getDescription()}">Features</a>
+                    </li>
+                </td>
+            </tr>
         </ul>
     </div>
 </nav>

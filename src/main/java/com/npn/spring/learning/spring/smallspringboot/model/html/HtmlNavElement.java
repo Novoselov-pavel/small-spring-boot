@@ -1,10 +1,10 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html;
 
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
+import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
@@ -29,6 +29,9 @@ public class HtmlNavElement {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "href")
+    private String href;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "header_items_authority",
             joinColumns = @JoinColumn(name = "header_item_id", referencedColumnName = "id"),
@@ -38,8 +41,75 @@ public class HtmlNavElement {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private HtmlNavElement parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @OrderBy("elementOrder")
     private final Set<HtmlNavElement> children = new CopyOnWriteArraySet<>();
+
+    @Column(name = "items_order")
+    private int elementOrder;
+
+    /**
+     * Возвращает элемент меню и его подэлементы, который доступен для пользователя.
+     * Создает копию исходного элемента.
+     *
+     * @param user пользовател
+     * @return копия HtmlNavElement или Null
+     */
+    public HtmlNavElement getElementForUserAuthority(final User user) {
+        return getElementForUserAuthority(user.getAuthorities());
+    }
+
+    /**
+     * Возвращает элемент меню и его подэлементы, который доступен для указанных ролей.
+     * Создает копия исходного элемента
+     *
+     * @param authorities роли пользователя
+     * @return копию HtmlNavElement или Null
+     */
+    public HtmlNavElement getElementForUserAuthority(final Set<MyUserAuthority> authorities) {
+        return cloneElementForUserAuthority(this,authorities);
+    }
+
+    /**
+     * Клонирует HtmlNavElement
+     *
+     * @param element
+     * @return
+     */
+    public HtmlNavElement cloneElementForUserAuthority(final HtmlNavElement element,
+                                                       final Set<MyUserAuthority> authorities) {
+        if (!isElementVisible(element,authorities)) return null;
+
+        HtmlNavElement retVal = new HtmlNavElement();
+        retVal.setId(element.getId());
+        retVal.setName(element.getName());
+        retVal.setType(element.getType());
+        retVal.setDescription(element.getDescription());
+        retVal.setHref(element.getHref());
+        retVal.setAuthorities(element.getAuthorities());
+        retVal.setParent(element.getParent());
+        retVal.setElementOrder(element.getElementOrder());
+        List<HtmlNavElement> children = element.getChildren()
+                .stream()
+                .filter(x->isElementVisible(x,authorities))
+                .map(x->cloneElementForUserAuthority(x,authorities))
+                .sorted(Comparator.comparingInt(HtmlNavElement::getElementOrder))
+                .collect(Collectors.toList());
+        retVal.setChildren(children);
+        return retVal;
+    }
+
+    /**
+     * Проверяет, выводится ли на экран элемент меню для данного пользователя
+     *
+     * @param element
+     * @param authorities
+     * @return
+     */
+    private boolean isElementVisible(final HtmlNavElement element,
+                                     final Set<MyUserAuthority> authorities){
+        return element.getAuthorities().stream().map(x->authorities.contains(x)).filter(x->x).count()>0;
+    }
 
     public Long getId() {
         return id;
@@ -98,8 +168,8 @@ public class HtmlNavElement {
         return parent;
     }
 
-    public Set<HtmlNavElement> getChildren() {
-        return children.stream().collect(Collectors.toUnmodifiableSet());
+    public List<HtmlNavElement> getChildren() {
+        return children.stream().collect(Collectors.toUnmodifiableList());
     }
 
     public void setParent(HtmlNavElement parent) {
@@ -110,11 +180,33 @@ public class HtmlNavElement {
         authorities.add(userAuthority);
     }
 
-    public void setChildren(HtmlNavElement element) {
+    public void setAuthorities (Collection<MyUserAuthority> userAuthorities) {
+        authorities.addAll(userAuthorities);
+    }
+
+    public void setChild(HtmlNavElement element) {
         children.add(element);
     }
 
+    public void setChildren(Collection<HtmlNavElement> collection) {
+        children.addAll(collection);
+    }
 
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public int getElementOrder() {
+        return elementOrder;
+    }
+
+    public void setElementOrder(int elementOrder) {
+        this.elementOrder = elementOrder;
+    }
 
     @Override
     public boolean equals(Object o) {

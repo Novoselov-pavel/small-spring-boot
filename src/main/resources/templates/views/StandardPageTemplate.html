@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/common/favicon.ico}">
+    <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+    <title th:text="${htmlThymeleafPage.getTitle()}">Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="common/css/commonStyle.css" th:href="@{/static/common/css/commonStyle.css}">
+    <link rel="stylesheet" href="rootpages/css/style.css" th:href="@{/static/rootpages/css/style.css}">
+</head>
+<body>
+
+<!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+<div th:replace="views/fragments/NavbarFragments.html :: ${htmlThymeleafPage.getNavName()}"></div>
+
+<!--<div th:replace="views/fragments/NavbarFragments.html :: leftTabNav"></div>-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="nav flex-column nav-pills col-sm-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
+            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+        </div>
+        <div class="tab-content col-sm-10" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda autem cum delectus, et explicabo, ipsa modi molestias neque nobis omnis tempore voluptates. Aspernatur hic inventore modi, obcaecati possimus quis sunt? Accusamus dicta doloribus error ex facilis incidunt minus natus, ratione reprehenderit similique? Delectus dolore molestias natus porro quasi ullam vel?</div>
+            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, alias amet consequatur dolor ipsa maxime nihil officiis qui quis quos?</div>
+            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, modi.</div>
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur culpa cumque cupiditate eum facilis ipsam labore magni quos. A beatae cumque fugiat provident quis quisquam saepe velit? Accusamus cum dignissimos eaque, eum non odit quos repellat similique totam ut! Alias quia quis ullam. Amet at, debitis distinctio dolor doloremque, error ex excepturi explicabo fuga impedit, ipsam molestias mollitia nemo quisquam rem sequi tenetur vel. Accusamus adipisci consequatur cupiditate et harum laboriosam laudantium mollitia nam non nulla quis similique tempora, voluptate! Ab aliquid animi at atque delectus deleniti dignissimos et exercitationem id magni officiis optio praesentium quae quidem quod recusandae repellat sed, voluptatum? Cum cumque dolorem est fugiat odit possimus praesentium totam vitae! Accusantium aliquid architecto atque commodi delectus dolorum modi nam nostrum quaerat veniam? Amet architecto cupiditate doloremque esse est, facere in itaque molestias quaerat qui rem sunt tenetur! Alias asperiores aspernatur exercitationem minus neque nostrum similique veniam voluptatum. Ad aliquid amet aspernatur commodi consequatur corporis dicta dolore dolores eligendi et ex exercitationem expedita fuga in incidunt inventore itaque minima molestiae nam, nostrum nulla numquam omnis provident quae quaerat quod, ratione reiciendis sapiente sed sequi similique sint tempora tempore temporibus tenetur, ullam veritatis. Aliquam aperiam architecto beatae corporis debitis eos, ipsum iste itaque, iure iusto libero modi molestiae molestias nesciunt nihil obcaecati porro provident similique temporibus tenetur unde voluptas voluptate voluptatibus? Dolor facilis, impedit in molestias nihil officia quis quos sit voluptate? Aliquam asperiores cupiditate dolorem harum id illo minus neque nobis, nostrum. Aliquam consequatur delectus exercitationem nemo rerum? Aperiam aut consequatur consequuntur dignissimos est expedita, fugit ipsum iusto non perspiciatis repellat repudiandae voluptatum! Consequatur cum dolorem, doloribus ea est in libero nemo quia quod rem repellat reprehenderit velit voluptates. Ad delectus esse, expedita illo laborum saepe similique? Aliquam culpa deleniti dicta ducimus earum eos fugiat inventore labore natus nobis nostrum optio perspiciatis quam quo, vel? Ad autem beatae consectetur corporis debitis deserunt dicta doloremque dolores enim, exercitationem expedita incidunt ipsa laboriosam modi neque nesciunt non odio omnis perferendis, provident quasi quo rem rerum sed similique, tempore vel. Consequuntur cumque nemo optio possimus provident, quae quia voluptates voluptatibus. Aperiam atque, blanditiis doloremque dolores eos facere harum impedit libero magnam minima minus necessitatibus obcaecati quae quaerat, quasi quia quibusdam quis quo quos, sed sunt totam ullam unde vero voluptatum! Animi asperiores, consectetur consequuntur enim fugit impedit in labore nisi quos. Alias at atque cum delectus distinctio dolorem excepturi explicabo id itaque libero magnam non officia, pariatur, ratione sunt, ullam veritatis voluptatum? Alias blanditiis cumque dignissimos earum illo iste laborum maiores, modi natus voluptate. Ab accusantium atque autem debitis dolores eum id iste labore maxime minima natus necessitatibus non optio, porro possimus quam quas recusandae sed sint, vitae voluptatem, voluptates voluptatibus. Aliquid aut culpa cupiditate deleniti deserunt eaque maiores nihil nostrum, perspiciatis quisquam repellat ullam? Accusantium animi blanditiis deleniti eos error esse facilis ipsum iusto laudantium libero, odit quasi repellat veniam. Ab ad aut doloribus eveniet excepturi inventore iste molestias nobis nostrum obcaecati, provident quasi sed similique tenetur ut! Esse harum, totam.</div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

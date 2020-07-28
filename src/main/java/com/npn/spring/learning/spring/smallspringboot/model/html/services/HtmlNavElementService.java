@@ -2,10 +2,12 @@ package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.HtmlNavElementsRepository;
+import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Служба, для работы с элементом меню
@@ -32,7 +34,7 @@ public class HtmlNavElementService {
      */
     public HtmlNavElement loadByName(String name) {
         if (name == null) throw new IllegalArgumentException("Null name in loadByName() is forbidden");
-        return repository.findFirstByName(name.toLowerCase());
+        return repository.findFirstByNameOrderByElementOrder(name.toLowerCase());
     }
 
 
@@ -47,12 +49,17 @@ public class HtmlNavElementService {
 
 
     /**
-     * Возвращает список заголовков панели
+     * Возвращает список заголовков панели с учетом прав доступа пользователя
      *
      * @return List<HtmlNavElement>
      */
-    public List<HtmlNavElement> getNavHeaderElements() {
-        return repository.findByParentIsNull();
+    public List<HtmlNavElement> getNavHeaderElements(User user) {
+        List<HtmlNavElement> currentList = repository.findByParentIsNullOrderByElementOrder();
+        return currentList
+                .stream()
+                .map(x->x.getElementForUserAuthority(user))
+                .filter(x->x!=null)
+                .collect(Collectors.toList());
     }
 
 

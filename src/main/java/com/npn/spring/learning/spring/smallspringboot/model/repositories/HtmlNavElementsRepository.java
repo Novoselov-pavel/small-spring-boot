@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HtmlNavElementsRepository extends JpaRepository<HtmlNavElement, Long> {
-    HtmlNavElement findFirstByName(String name);
+    HtmlNavElement findFirstByNameOrderByElementOrder(String name);
 
-    List<HtmlNavElement> findByParentIsNull();
+    List<HtmlNavElement> findByParentIsNullOrderByElementOrder();
 
 }
