@@ -49,12 +49,12 @@ public class UserService implements UserServiceInterface {
      */
     @Override
     public User addNewUser(String name, String password) throws UserAlreadyExist {
-        User user = findByName(name.toLowerCase());
+        User user = findByName(name);
         if (user!=null) throw new UserAlreadyExist();
         String encodedPassword = passwordEncoder.encode(password);
         MyUserAuthority authority = userAuthority.getUserAuthorityByName(UsersRoles.USER_ROLE.toString());
 
-        User newUser = new User(name.toLowerCase(),name,encodedPassword,
+        User newUser = new User(name,name,encodedPassword,
                 true,true,true,true);
         newUser.addAuthority(authority);
 

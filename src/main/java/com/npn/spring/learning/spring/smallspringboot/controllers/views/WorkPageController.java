@@ -1,9 +1,10 @@
 package com.npn.spring.learning.spring.smallspringboot.controllers.views;
 
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
+import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage;
-import com.npn.spring.learning.spring.smallspringboot.model.html.services.HtmlNavElementService;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
+import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,11 +18,17 @@ import java.util.List;
 public class WorkPageController {
 
     @Autowired
-    HtmlNavElementService service;
+    HtmlNavElementServiceInterface service;
 
+    /**
+     * Открывает страницу пользователя
+     *
+     * @param authentication
+     * @param model
+     * @return
+     */
     @GetMapping(value = {"/user/","/user"})
     public String getHomePage(Authentication authentication, Model model) {
-//        Authentication authentication
         User user;
         if (authentication.getPrincipal() instanceof User) {
             user = (User) authentication.getPrincipal();
@@ -31,6 +38,32 @@ public class WorkPageController {
         HtmlThymeleafPage page = createDefaultHtmlThymeleafPage(user);
         model.addAttribute(HtmlThymeleafPage.getThymeleafObjectName(),page);
 
+
+        return "views/StandardPageTemplate.html";
+    }
+
+    /**
+     * Открывает страницу админки
+     *
+     * @param authentication
+     * @param model
+     * @return
+     */
+    @GetMapping("/admin")
+    public String getAdminPage(Authentication authentication, Model model) {
+        User user;
+        if (authentication.getPrincipal() instanceof User) {
+            user = (User) authentication.getPrincipal();
+        } else {
+            return "redirect:/login";
+        }
+        if (!user.hasRole(UsersRoles.ADMIN_ROLE)) {
+            return "redirect:/user";
+        }
+        HtmlThymeleafPage page = createDefaultHtmlThymeleafPage(user);
+        page.setBodyFragmentRef("views/fragments/AdminBodyFragment.html :: body");
+        model.addAttribute(HtmlThymeleafPage.getThymeleafObjectName(),page);
+        model.addAttribute("userTableRef","/admin/userTables");
 
         return "views/StandardPageTemplate.html";
     }

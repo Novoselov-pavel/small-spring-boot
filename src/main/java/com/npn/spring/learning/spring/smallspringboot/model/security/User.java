@@ -55,7 +55,7 @@ public class User implements UserDetails {
     public User(String name, String displayName, String password,
                 boolean accountNonExpired, boolean accountNonLocked,
                 boolean credentialsNonExpired, boolean enabled) {
-        this.name = name;
+        this.name = name.toLowerCase();
         this.displayName = displayName;
         this.password = password;
         this.accountNonExpired = accountNonExpired;
@@ -186,6 +186,10 @@ public class User implements UserDetails {
 
     public void addAuthority(MyUserAuthority authority) {
         authorities.add(authority);
+    }
+
+    public boolean hasRole(UsersRoles role) {
+        return authorities.stream().anyMatch(x->x.getRole().equals(role.name()));
     }
 
     @Override

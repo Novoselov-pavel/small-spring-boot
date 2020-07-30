@@ -6,6 +6,11 @@ import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAutho
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class UserAuthorityService implements UserAuthorityInterface {
 
@@ -16,6 +21,17 @@ public class UserAuthorityService implements UserAuthorityInterface {
         return userAuthoritiesRepository.findByRole(name.toUpperCase());
     }
 
+
+    /**
+     * Возвращает все роли
+     * @return
+     */
+    public List<MyUserAuthority> getAllAuthorities() {
+        return StreamSupport
+                .stream(userAuthoritiesRepository.findAll().spliterator(),false)
+                .sorted(Comparator.comparingLong(MyUserAuthority::getId))
+                .collect(Collectors.toList());
+    }
     @Autowired
     public void setUserAuthoritiesRepository(UserAuthoritiesRepository userAuthoritiesRepository) {
         this.userAuthoritiesRepository = userAuthoritiesRepository;

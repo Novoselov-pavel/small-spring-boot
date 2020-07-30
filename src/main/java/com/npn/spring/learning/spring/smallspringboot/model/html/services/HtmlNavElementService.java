@@ -1,6 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
+import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.HtmlNavElementsRepository;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * Служба, для работы с элементом меню
  */
 @Service
-public class HtmlNavElementService {
+public class HtmlNavElementService implements HtmlNavElementServiceInterface {
 
     @Autowired
     private HtmlNavElementsRepository repository;

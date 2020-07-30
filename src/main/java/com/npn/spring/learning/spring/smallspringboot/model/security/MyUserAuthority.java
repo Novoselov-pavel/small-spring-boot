@@ -1,5 +1,6 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
@@ -23,6 +24,7 @@ public class MyUserAuthority implements GrantedAuthority {
     @Column(name="role_name")
     private String role;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usrs_authority",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
@@ -49,6 +51,7 @@ public class MyUserAuthority implements GrantedAuthority {
         this.role = role.name();
     }
 
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return role;
