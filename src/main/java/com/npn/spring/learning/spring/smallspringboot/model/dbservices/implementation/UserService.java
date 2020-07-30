@@ -1,5 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.dbservices.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserAuthorityInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.UsersRepository;
@@ -11,19 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 /**
  * Служба по взаимодействию с пользователем
  */
 @Service("userService")
 public class UserService implements UserServiceInterface {
 
-    @Autowired
     private UserAuthorityInterface userAuthority;
 
-    @Autowired
     private UsersRepository usersRepository;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     /**
@@ -57,4 +61,54 @@ public class UserService implements UserServiceInterface {
         return usersRepository.save(newUser);
     }
 
+    /**
+     * Запрашивает из базы данных всех пользователей
+     *
+     * @return List<User>
+     */
+    @Override
+    public List<User> findAll() {
+        return StreamSupport
+                .stream(usersRepository.findAll().spliterator(), false)
+                .sorted(Comparator.comparing(User::getName))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Возвращает List всех пользователей со стертыми паролями в виде Json String
+     *
+     * @return Json String
+     */
+    @Override
+    public String getAllUserAsJson() throws JsonProcessingException {
+        List<User> users = findAll();
+        String result = new ObjectMapper().writeValueAsString(users);
+        //TODO
+        return result;
+    }
+
+    /**
+     * Сохраняет в БД измененные данные пользователя (кроме пароля)
+     *
+     * @param Json String
+     */
+    @Override
+    public void saveUser(String Json) {
+        //TODO
+    }
+
+    @Autowired
+    public void setUserAuthority(UserAuthorityInterface userAuthority) {
+        this.userAuthority = userAuthority;
+    }
+
+    @Autowired
+    public void setUsersRepository(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 }

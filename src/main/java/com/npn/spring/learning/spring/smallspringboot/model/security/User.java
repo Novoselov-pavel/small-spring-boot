@@ -1,5 +1,6 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Класс определяющий пользователя
  */
+@JsonIgnoreProperties(value = {"password"}, ignoreUnknown = true)
 @Entity
 @Table(name="usrs")
 public class User implements UserDetails {
@@ -143,7 +145,7 @@ public class User implements UserDetails {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     public String getDisplayName() {
@@ -156,10 +158,6 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setUsername(String name) {
-        this.name = name;
     }
 
     public void setDisplayName(String displayName) {

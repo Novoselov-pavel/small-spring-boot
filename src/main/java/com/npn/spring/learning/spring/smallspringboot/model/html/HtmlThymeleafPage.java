@@ -10,6 +10,7 @@ public class HtmlThymeleafPage {
     private String message;
     private String navName;
     private List<HtmlNavElement> navElements;
+    private String bodyFragmentRef;
 
     public static String getThymeleafObjectName() {
         return thymeleafObjectName;
@@ -61,5 +62,13 @@ public class HtmlThymeleafPage {
 
     public void setNavElements(List<HtmlNavElement> navElements) {
         this.navElements = navElements;
+    }
+
+    public String getBodyFragmentRef() {
+        return bodyFragmentRef;
+    }
+
+    public void setBodyFragmentRef(String bodyFragmentRef) {
+        this.bodyFragmentRef = bodyFragmentRef;
     }
 }

@@ -1,0 +1,7 @@
+.table-bordered td, .table-bordered th {
+    border-color: black;
+    border-width: 2px;
+}
+.table .thead-dark th{
+    background-color: #012395;
+}
