@@ -11,11 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Служба для работы с ролями
+ */
 @Service
 public class UserAuthorityService implements UserAuthorityInterface {
 
     private UserAuthoritiesRepository userAuthoritiesRepository;
 
+    /**
+     * Получает
+     * @param name
+     * @return
+     */
     @Override
     public MyUserAuthority getUserAuthorityByName(String name) {
         return userAuthoritiesRepository.findByRole(name.toUpperCase());

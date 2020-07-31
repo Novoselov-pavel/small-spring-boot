@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title  th:text="${errorTitle}">Error</title>
+</head>
+<body>
+<h1 th:text="${errorTitle}">Error</h1>
+<h2  th:text="${errorMessage}">message</h2>
+<a href="/">На главную</a>
+<p></p>
+<a href="/logout">Выход</a>
+</body>
+</html>

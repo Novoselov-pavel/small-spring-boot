@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,9 +19,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+/**
+ * Конфигурационный класс для разграничения доступа
+ */
 @Configuration
 @EnableWebSecurity
 @EnableAutoConfiguration
+@EnableGlobalMethodSecurity(
+  prePostEnabled = true,
+  securedEnabled = true,
+  jsr250Enabled = true
+)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${my.session.timeout}")
@@ -37,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/","/home","/registry","/static/**")
+                .antMatchers("/","/home","/registry","/static/**", "/error")
                 .anonymous()
                 .antMatchers(HttpMethod.POST,"/registry")
                 .anonymous()
@@ -63,7 +72,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     /**
-     * @return the {@link UserDetailsService} to use
+     * Создание бина службы, для работы с пользователем
+     *
+     * @return имплементацию {@link UserDetailsService}
      */
     @Bean
     @Override

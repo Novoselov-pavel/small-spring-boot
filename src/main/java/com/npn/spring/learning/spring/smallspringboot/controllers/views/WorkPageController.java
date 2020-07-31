@@ -1,19 +1,20 @@
 package com.npn.spring.learning.spring.smallspringboot.controllers.views;
 
-import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-import java.util.List;
-
+/**
+ * Контроллер для получения страниц "/user/","/user", "/admin"
+ */
 @Controller
 public class WorkPageController {
 
@@ -49,6 +50,7 @@ public class WorkPageController {
      * @param model
      * @return
      */
+    @Secured("ADMIN_ROLE")
     @GetMapping("/admin")
     public String getAdminPage(Authentication authentication, Model model) {
         User user;
