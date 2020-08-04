@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -41,6 +42,21 @@ public class UserService implements UserServiceInterface {
     }
 
     /**
+     * Обновляет данные пользователя
+     *
+     * @param id пользователя
+     * @return нового пользователя, или null, если он не был найден
+     */
+    @Override
+    public User updateUser(Long id, String Json) {
+        Optional<User> userObject = usersRepository.findById(id);
+        if (!userObject.isPresent()) return null;
+        User user = userObject.get();
+        //TODO остановился тут
+        return null;
+    }
+
+    /**
      * Создает, сохраняет в базу данных и возвращает нового пользователя с ролью USER_ROLE
      *
      * @param name
@@ -52,7 +68,7 @@ public class UserService implements UserServiceInterface {
         User user = findByName(name);
         if (user!=null) throw new UserAlreadyExist();
         String encodedPassword = passwordEncoder.encode(password);
-        MyUserAuthority authority = userAuthority.getUserAuthorityByName(UsersRoles.USER_ROLE.toString());
+        MyUserAuthority authority = userAuthority.getUserAuthorityByName(UsersRoles.ROLE_USER.toString());
 
         User newUser = new User(name,name,encodedPassword,
                 true,true,true,true);
@@ -82,19 +98,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public String getAllUserAsJson() throws JsonProcessingException {
         List<User> users = findAll();
-        String result = new ObjectMapper().writeValueAsString(users);
-        //TODO
-        return result;
-    }
-
-    /**
-     * Сохраняет в БД измененные данные пользователя (кроме пароля)
-     *
-     * @param Json String
-     */
-    @Override
-    public void saveUser(String Json) {
-        //TODO
+        return new ObjectMapper().writeValueAsString(users);
     }
 
     @Autowired

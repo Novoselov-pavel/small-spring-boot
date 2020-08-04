@@ -50,7 +50,7 @@ public class WorkPageController {
      * @param model
      * @return
      */
-    @Secured("ADMIN_ROLE")
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
     public String getAdminPage(Authentication authentication, Model model) {
         User user;
@@ -59,7 +59,7 @@ public class WorkPageController {
         } else {
             return "redirect:/login";
         }
-        if (!user.hasRole(UsersRoles.ADMIN_ROLE)) {
+        if (!user.hasRole(UsersRoles.ROLE_ADMIN)) {
             return "redirect:/user";
         }
         HtmlThymeleafPage page = createDefaultHtmlThymeleafPage(user);

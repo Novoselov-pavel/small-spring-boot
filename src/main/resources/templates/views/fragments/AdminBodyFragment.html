@@ -26,10 +26,11 @@
         </div>
         <div class="tab-content col-sm-10" id="v-pills-tabContent">
             <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                <table class="table table-striped table-bordered table-hover table-sm table-responsive">
+                <table class="table table-bordered table-hover table-sm table-responsive">
                     <thead class="thead-dark tableHead">
                     <tr class="bg-primary">
                         <th class="count" scope="col">#</th>
+                        <th class="id" hidden scope="col">id</th>
                         <th class="user_name" scope="col">Имя пользователя</th>
                         <th class="user_display_name" scope="col">Псевдоним</th>
                         <th class="account_non_expired" scope="col">Аккаунт не просрочен</th>
@@ -40,15 +41,76 @@
                     </tr>
                     </thead>
                     <tbody class="tableBody">
-                    <tr>
-                    </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="modal fade" id="modifyUser" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Редактировать пользователя</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body modifyUserBody">
+                            <form class="modifyUserForm" action="/admin/modifyUser/">
+                                <div class="form-group">
+                                    <label for="id">id</label>
+                                    <input name="id" type="text" class="form-control" id="id" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user_name">Имя пользователя</label>
+                                    <input name="name" type="text" class="form-control" id="user_name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="user_display_name">Псевдоним</label>
+                                    <input name="displayName" type="text" class="form-control" id="user_display_name" aria-describedby="emailHelp">
+                                </div>
+                                <div class="form-check">
+                                    <input name="accountNonExpired" class="form-check-input" type="checkbox" value="" id="account_non_expired">
+                                    <label class="form-check-label" for="account_non_expired">
+                                        Аккаунт не просрочен
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="accountNonLocked" class="form-check-input" type="checkbox" value="" id="account_non_locked">
+                                    <label class="form-check-label" for="account_non_locked">
+                                        Аккаунт не заблокирован
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="credentialsNonExpired" class="form-check-input" type="checkbox" value="" id="credentials_non_expired">
+                                    <label class="form-check-label" for="credentials_non_expired">
+                                        Полномочия не просрочены
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="enabled" class="form-check-input" type="checkbox" value="" id="enabled">
+                                    <label class="form-check-label" for="enabled">
+                                        Включен
+                                    </label>
+                                </div>
+                                <p style="margin-top: 10px; margin-bottom: 2px;">Роли:</p>
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                            <button type="button" class="btn btn-primary saveUser">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, alias amet consequatur dolor ipsa maxime nihil officiis qui quis quos?</div>
             <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, modi.</div>
             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur culpa cumque cupiditate eum facilis ipsam labore magni quos. A beatae cumque fugiat provident quis quisquam saepe velit? Accusamus cum dignissimos eaque, eum non odit quos repellat similique totam ut! Alias quia quis ullam. Amet at, debitis distinctio dolor doloremque, error ex excepturi explicabo fuga impedit, ipsam molestias mollitia nemo quisquam rem sequi tenetur vel. Accusamus adipisci consequatur cupiditate et harum laboriosam laudantium mollitia nam non nulla quis similique tempora, voluptate! Ab aliquid animi at atque delectus deleniti dignissimos et exercitationem id magni officiis optio praesentium quae quidem quod recusandae repellat sed, voluptatum? Cum cumque dolorem est fugiat odit possimus praesentium totam vitae! Accusantium aliquid architecto atque commodi delectus dolorum modi nam nostrum quaerat veniam? Amet architecto cupiditate doloremque esse est, facere in itaque molestias quaerat qui rem sunt tenetur! Alias asperiores aspernatur exercitationem minus neque nostrum similique veniam voluptatum. Ad aliquid amet aspernatur commodi consequatur corporis dicta dolore dolores eligendi et ex exercitationem expedita fuga in incidunt inventore itaque minima molestiae nam, nostrum nulla numquam omnis provident quae quaerat quod, ratione reiciendis sapiente sed sequi similique sint tempora tempore temporibus tenetur, ullam veritatis. Aliquam aperiam architecto beatae corporis debitis eos, ipsum iste itaque, iure iusto libero modi molestiae molestias nesciunt nihil obcaecati porro provident similique temporibus tenetur unde voluptas voluptate voluptatibus? Dolor facilis, impedit in molestias nihil officia quis quos sit voluptate? Aliquam asperiores cupiditate dolorem harum id illo minus neque nobis, nostrum. Aliquam consequatur delectus exercitationem nemo rerum? Aperiam aut consequatur consequuntur dignissimos est expedita, fugit ipsum iusto non perspiciatis repellat repudiandae voluptatum! Consequatur cum dolorem, doloribus ea est in libero nemo quia quod rem repellat reprehenderit velit voluptates. Ad delectus esse, expedita illo laborum saepe similique? Aliquam culpa deleniti dicta ducimus earum eos fugiat inventore labore natus nobis nostrum optio perspiciatis quam quo, vel? Ad autem beatae consectetur corporis debitis deserunt dicta doloremque dolores enim, exercitationem expedita incidunt ipsa laboriosam modi neque nesciunt non odio omnis perferendis, provident quasi quo rem rerum sed similique, tempore vel. Consequuntur cumque nemo optio possimus provident, quae quia voluptates voluptatibus. Aperiam atque, blanditiis doloremque dolores eos facere harum impedit libero magnam minima minus necessitatibus obcaecati quae quaerat, quasi quia quibusdam quis quo quos, sed sunt totam ullam unde vero voluptatum! Animi asperiores, consectetur consequuntur enim fugit impedit in labore nisi quos. Alias at atque cum delectus distinctio dolorem excepturi explicabo id itaque libero magnam non officia, pariatur, ratione sunt, ullam veritatis voluptatum? Alias blanditiis cumque dignissimos earum illo iste laborum maiores, modi natus voluptate. Ab accusantium atque autem debitis dolores eum id iste labore maxime minima natus necessitatibus non optio, porro possimus quam quas recusandae sed sint, vitae voluptatem, voluptates voluptatibus. Aliquid aut culpa cupiditate deleniti deserunt eaque maiores nihil nostrum, perspiciatis quisquam repellat ullam? Accusantium animi blanditiis deleniti eos error esse facilis ipsum iusto laudantium libero, odit quasi repellat veniam. Ab ad aut doloribus eveniet excepturi inventore iste molestias nobis nostrum obcaecati, provident quasi sed similique tenetur ut! Esse harum, totam.</div>
         </div>
+
+
+
+
     </div>
     <script src="/static/jsonscript/loadUsersTable.js" th:href="@{/static/jsonscript/loadUsersTable.js}"></script>
     <script th:inline="javascript">

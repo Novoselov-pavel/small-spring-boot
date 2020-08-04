@@ -3,7 +3,7 @@ package com.npn.spring.learning.spring.smallspringboot.model.repositories;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * DAO для пользователей
@@ -11,4 +11,6 @@ import java.util.List;
 public interface UsersRepository extends CrudRepository<User,Long> {
 
     User findByName(String name);
+
+    Optional<User> findById(Long id);
 }

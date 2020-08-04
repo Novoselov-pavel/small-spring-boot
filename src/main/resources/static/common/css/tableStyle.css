@@ -5,3 +5,10 @@
 .table .thead-dark th{
     background-color: #012395;
 }
+
+tr[class ='selectedRow']{
+    background-color: cyan;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: cyan;
+}

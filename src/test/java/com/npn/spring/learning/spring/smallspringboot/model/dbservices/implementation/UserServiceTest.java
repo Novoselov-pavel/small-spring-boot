@@ -38,11 +38,11 @@ class UserServiceTest {
     @BeforeEach
     void init() {
         MyUserAuthority userAuthority = new MyUserAuthority();
-        userAuthority.setRole(UsersRoles.USER_ROLE);
+        userAuthority.setRole(UsersRoles.ROLE_USER);
         userAuthority.setId(1L);
 
         MyUserAuthority adminAuthority = new MyUserAuthority();
-        adminAuthority.setRole(UsersRoles.ADMIN_ROLE);
+        adminAuthority.setRole(UsersRoles.ROLE_ADMIN);
         adminAuthority.setId(2L);
 
 
