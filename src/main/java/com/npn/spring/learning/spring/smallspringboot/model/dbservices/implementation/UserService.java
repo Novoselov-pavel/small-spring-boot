@@ -9,6 +9,10 @@ import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAutho
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.UserAlreadyExist;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,14 +50,19 @@ public class UserService implements UserServiceInterface {
      *
      * @param id пользователя
      * @return нового пользователя, или null, если он не был найден
+     * @throws ParseException при ошибке распознования Json
      */
     @Override
-    public User updateUser(Long id, String Json) {
+    public User updateUser(final Long id, final String json) throws ParseException {
         Optional<User> userObject = usersRepository.findById(id);
         if (!userObject.isPresent()) return null;
+
         User user = userObject.get();
-        //TODO остановился тут
-        return null;
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(json);
+        user = fillUserFromJSONObject(user, jsonObject);
+        user = usersRepository.save(user);
+        return user;
     }
 
     /**
@@ -101,6 +110,19 @@ public class UserService implements UserServiceInterface {
         return new ObjectMapper().writeValueAsString(users);
     }
 
+    /**
+     * Удаляет пользователя
+     *
+     * @param id id пользователя
+     */
+    @Override
+    public void deleteUser(Long id) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user.isPresent()) {
+            usersRepository.delete(user.get());
+        }
+    }
+
     @Autowired
     public void setUserAuthority(UserAuthorityInterface userAuthority) {
         this.userAuthority = userAuthority;
@@ -114,5 +136,27 @@ public class UserService implements UserServiceInterface {
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
+    }
+
+    /**
+     * Заполняет переданного пользователя данными из JSONObject
+     *
+     * @param user переданный User
+     * @param object JSONObject
+     * @return переданный User
+     */
+    private User fillUserFromJSONObject(User user, JSONObject object) {
+        user.setName(object.get("name").toString());
+        user.setDisplayName(object.get("displayName").toString());
+        user.setEnabled((Boolean) object.get("enabled"));
+        user.setAccountNonExpired((Boolean) object.get("accountNonExpired"));
+        user.setAccountNonLocked((Boolean) object.get("accountNonLocked"));
+        user.setCredentialsNonExpired((Boolean) object.get("credentialsNonExpired"));
+        JSONArray roles = (JSONArray) object.get("roles");
+        List<MyUserAuthority> authorities= (List<MyUserAuthority>) roles
+                .stream()
+                .map(x-> userAuthority.getUserAuthorityByName(x.toString())).collect(Collectors.toList());
+        user.changeAuthorities(authorities);
+        return user;
     }
 }

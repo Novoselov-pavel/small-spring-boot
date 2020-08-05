@@ -20,8 +20,7 @@
 <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
 <div th:replace="views/fragments/NavbarFragments.html :: ${htmlThymeleafPage.getNavName()}"></div>
 
-<div th:replace="views/fragments/AdminBodyFragment.html :: body"></div>
-<!--<div th:replace="${htmlThymeleafPage.getBodyFragmentRef()}"></div>-->
+<div th:replace="__${htmlThymeleafPage.getBodyFragmentRef()}__"></div>
 
 
 

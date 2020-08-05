@@ -6,6 +6,7 @@ import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServi
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -50,12 +51,29 @@ public class AdminScriptController {
         }
     }
 
-    @PutMapping(value = "admin/modifyUser/{id}", consumes = {"application/json;charset=UTF-8"}, produces = {"application/json;charset=UTF-8"})
+    @PutMapping(value = "admin/user/{id}", consumes = {"application/json;charset=UTF-8"}, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody String updateUser(@PathVariable("id") Long id, Authentication authentication, @RequestBody String body) {
         if (!isAdmin(authentication)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
         }
-        // TODO
+        try {
+            User user = userService.updateUser(id,body);
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace(); // TODO когда будут идеи по логгированию
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad Json object");
+        }
+        return "{}";
+    }
+
+    @DeleteMapping(value = "admin/user/{id}",  produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody String deleteUser(@PathVariable("id") Long id, Authentication authentication) {
+        if (!isAdmin(authentication)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
+        }
+        userService.deleteUser(id);
         return "{}";
     }
 

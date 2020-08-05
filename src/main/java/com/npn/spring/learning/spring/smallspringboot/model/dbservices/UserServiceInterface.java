@@ -3,6 +3,7 @@ package com.npn.spring.learning.spring.smallspringboot.model.dbservices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.UserAlreadyExist;
+import org.json.simple.parser.ParseException;
 
 import java.util.List;
 
@@ -22,10 +23,11 @@ public interface UserServiceInterface {
      * Обновляет данные пользователя
      *
      * @param id пользователя
-     * @param Json String
+     * @param json String
      * @return нового пользователя, или null, если он не был найден
+     * @throws ParseException при ошибке распознования Json
      */
-    User updateUser(Long id, String Json);
+    User updateUser(Long id, String json) throws ParseException;
 
     /**
      * Добавляет нового пользователя
@@ -51,4 +53,10 @@ public interface UserServiceInterface {
      */
     String getAllUserAsJson() throws JsonProcessingException;
 
+    /**
+     * Удаляет пользователя
+     *
+     * @param id id пользователя
+     */
+    void deleteUser(Long id);
 }

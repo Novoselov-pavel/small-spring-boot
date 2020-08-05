@@ -37,8 +37,8 @@ public class WorkPageController {
             return "redirect:/login";
         }
         HtmlThymeleafPage page = createDefaultHtmlThymeleafPage(user);
+        page.setBodyFragmentRef("views/fragments/UserBodyMainFragment.html :: userMain");
         model.addAttribute(HtmlThymeleafPage.getThymeleafObjectName(),page);
-
 
         return "views/StandardPageTemplate.html";
     }

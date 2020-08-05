@@ -188,6 +188,11 @@ public class User implements UserDetails {
         authorities.add(authority);
     }
 
+    public void changeAuthorities (Collection<MyUserAuthority> collection) {
+        authorities.clear();
+        authorities.addAll(collection);
+    }
+
     public boolean hasRole(UsersRoles role) {
         return authorities.stream().anyMatch(x->x.getRole().equals(role.name()));
     }

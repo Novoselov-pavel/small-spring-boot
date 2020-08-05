@@ -2,7 +2,13 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
     const maxRequestNumber = 5;
     let currentRequestNumber = 0;
     const mainRef = jsonRef;
+    const tableBodyClassRef = tableBodyClass;
 
+    /**
+     * Get запрос с предоставлением результата как объекта
+     * @param ref дрес запроса
+     * @returns {Promise<Response>} объект
+     */
     const request = (ref) =>{
         return fetch(ref, {credentials: 'include'})
             .then((response) => {
@@ -22,11 +28,35 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
             })
     };
 
+    const deleteUser = () => {
+        let selectedRows = $(tableBodyClassRef).children().filter('.selectedRow');
+        if (selectedRows.length <= 0) return;
+
+        let row = selectedRows.children();
+        let name = row.filter('.user_name').text();
+        let id = row.filter('.id').text();
+
+        let acceptDelete = confirm(`delete user '${name}'?`);
+        if (!acceptDelete) return;
+
+        let href = $('form[class="modifyUserForm"]').prop('action') + id;
+        return fetch(href, {
+            method: 'DELETE'
+        }).then((response) => {
+            if (response.ok) {
+                return loadUserTableFromJson(tableBodyClassRef, mainRef);
+            } else {
+                throw new Error('ResponseNotOK');
+            }
+        }).catch(error => console.log(error));
+
+    };
+
     /**
      * Заполнение таблицы и добавление обработчика двойного нажатия на строчку
      *
-     * @param tableBodyClass
-     * @param jsonObject
+     * @param tableBodyClass класс тела таблицы
+     * @param jsonObject массив пользователей
      */
     const fillTable = (tableBodyClass,jsonObject) =>{
         let tableBody = $(tableBodyClass);
@@ -60,10 +90,25 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
             $(e.currentTarget).addClass('selectedRow');
         });
 
+        $('body').on('keyup', function (e) {
+            const key = e.key;
+            if (key === 'Delete') {
+                deleteUser();
+            }
+        });
+
 
     };
 
+    /**
+     * Открывает и заполняет модальное окно редактирование пользователя
+     * @param e параметр передающийся Handler
+     */
     const showModal = (e) =>{
+        /**
+         * Заполнение окна редактирования пользователя
+         * всеми данными, кроме ролей пользователя
+         */
         const loadUserDataWithoutRoles = ()=>{
             let row = $(e.currentTarget);
             let id = row.find('.id').text();
@@ -84,6 +129,10 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
             modifyUserBody.find('input[name="enabled"]').prop('checked', enabled);
         };
 
+        /**
+         * Добавление модального окна всеми, существующими роля пользователя
+         * @param data массив ролей пользователя
+         */
         const addRoles = (data) => {
             let roleCount = 0;
             let form = $('form[class="modifyUserForm"]');
@@ -98,6 +147,9 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
           });
         }
 
+        /**
+         * Отмечает роли, которые есть у пользователя
+         */
         const fillRoles = () =>{
             let row = $(e.currentTarget);
             let roles = row.find('.roles').text().split(',');
@@ -106,6 +158,10 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
             });
         }
 
+        /**
+         *  Открывает и заполняет модальное окно редактирование пользователя.
+         *  Назначает обработчики для кнопки saveUser
+         */
         request('admin/getAllRoles')
             .then((result)=>{
                 let buttonEl = "<button type=\"button\" class=\"btn btn-primary openModifyUser\" hidden data-toggle=\"modal\" data-target=\"#modifyUser\"></button>";
@@ -118,7 +174,7 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
                         .then((response)=>{
                             $('button[data-dismiss="modal"]').click();
                             if (response.ok) {
-                                return request(mainRef);
+                                return loadUserTableFromJson(tableBodyClassRef,mainRef);
                             } else {
                                 throw new Error('ResponseNotOK');
                             }
@@ -133,6 +189,10 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
 
     };
 
+    /**
+     * Сохранение пользователя
+     * @returns {Promise<Response>}
+     */
     const saveUser = () => {
         let form = $('form[class="modifyUserForm"]');
         let id = form.find('input[name="id"]').val();
@@ -169,10 +229,10 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
         tableBody.children().remove();
     }
 
-    request(jsonRef)
+    request(mainRef)
         .then((result)=>{
-            clearTableBody(tableBodyClass);
-            fillTable(tableBodyClass, result);
+            clearTableBody(tableBodyClassRef);
+            fillTable(tableBodyClassRef, result);
             return "";
         })
         .catch(reason => {console.log(reason)})
