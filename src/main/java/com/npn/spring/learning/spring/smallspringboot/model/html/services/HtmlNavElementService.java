@@ -1,5 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.HtmlNavElementsRepository;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class HtmlNavElementService implements HtmlNavElementServiceInterface {
 
-    @Autowired
+
     private HtmlNavElementsRepository repository;
 
     /**
@@ -63,5 +65,22 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя
+     *
+     * @param user пользователь
+     * @return Json строка
+     */
+    @Override
+    public String getNavHeaderElementsAsJson(User user) throws JsonProcessingException {
+        List<HtmlNavElement> currentList = getNavHeaderElements(user);
+        ObjectMapper mapper = new ObjectMapper();
+        String value = mapper.writeValueAsString(currentList);
+        return value;
+    }
 
+    @Autowired
+    public void setRepository(HtmlNavElementsRepository repository) {
+        this.repository = repository;
+    }
 }

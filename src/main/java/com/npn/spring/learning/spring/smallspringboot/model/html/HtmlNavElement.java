@@ -1,5 +1,8 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 @Table(name = "header_items")
 public class HtmlNavElement {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", updatable = false, nullable = false)
@@ -26,11 +30,13 @@ public class HtmlNavElement {
     @Column(name = "item_type", nullable = false)
     private String type;
 
+    @JsonProperty("text")
     @Column(name = "description")
     private String description;
 
     @Column(name = "href")
     private String href;
+
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "header_items_authority",
@@ -38,9 +44,11 @@ public class HtmlNavElement {
             inverseJoinColumns =@JoinColumn(name = "role_id", referencedColumnName = "id") )
     private final Set<MyUserAuthority> authorities = new CopyOnWriteArraySet();
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private HtmlNavElement parent;
 
+    @JsonProperty("children")
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
     @OrderBy("elementOrder")
     private final Set<HtmlNavElement> children = new CopyOnWriteArraySet<>();

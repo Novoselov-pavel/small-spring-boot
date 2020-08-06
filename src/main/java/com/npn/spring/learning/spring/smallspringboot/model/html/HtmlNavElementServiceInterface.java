@@ -1,5 +1,6 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 
 import java.util.List;
@@ -13,24 +14,32 @@ public interface HtmlNavElementServiceInterface {
      * @param id id
      * @return HtmlNavElement or null
      */
-    public HtmlNavElement loadById(long id);
+    HtmlNavElement loadById(long id);
 
     /**
      * Получает HtmlNavElement элемент по name
      * @param name name
      * @return HtmlNavElement or null
      */
-    public HtmlNavElement loadByName(String name);
+    HtmlNavElement loadByName(String name);
 
     /**
      * Сохраняет элемент в БД
      * @param element HtmlNavElement
      */
-    public void saveElement(HtmlNavElement element);
+    void saveElement(HtmlNavElement element);
     /**
      * Возвращает список заголовков панели с учетом прав доступа пользователя
      *
      * @return List<HtmlNavElement>
      */
-    public List<HtmlNavElement> getNavHeaderElements(User user);
+    List<HtmlNavElement> getNavHeaderElements(User user);
+
+    /**
+     * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя
+     *
+     * @param user пользователь
+     * @return Json строка
+     */
+    String getNavHeaderElementsAsJson(User user) throws JsonProcessingException;
 }
