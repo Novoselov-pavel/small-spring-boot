@@ -1,6 +1,8 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.implementation.UserService;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementType;
@@ -37,6 +39,7 @@ class HtmlNavElementServiceTest {
     private MyUserAuthority user = new MyUserAuthority();
 
     private MyUserAuthority admin = new MyUserAuthority();
+    List<HtmlNavElement> list = new ArrayList<>();
 
     @BeforeEach
     void init() {
@@ -93,11 +96,11 @@ class HtmlNavElementServiceTest {
         child3.setAuthority(admin);
 
         rootElement.setChild(child1);
-        rootElement.setChild(child2);
         rootElement.setChild(child3);
+        rootElement.setChild(child2);
 
         service.setRepository(repository);
-        List<HtmlNavElement> list = new ArrayList<>();
+
         list.add(rootElement);
 
         Mockito.when(repository.findByParentIsNullOrderByElementOrder()).thenReturn(list);
@@ -106,13 +109,12 @@ class HtmlNavElementServiceTest {
 
     @Test
     void getNavHeaderElementsAsJson() {
-        User tempUser = new User();
-        tempUser.addAuthority(user);
-        tempUser.addAuthority(admin);
         try {
-            String s = service.getNavHeaderElementsAsJson(tempUser);
-            System.out.println("");
-            ///TODO остановился тут
+            String s = service.getNavHeaderElementsAsJson();
+            ObjectMapper mapper = new ObjectMapper();
+            List<HtmlNavElement> readList = mapper.readValue(s, new TypeReference<List<HtmlNavElement>>(){});
+            assertEquals(list.size(),readList.size());
+            assertEquals(list,readList);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             fail();

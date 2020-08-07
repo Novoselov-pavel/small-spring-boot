@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<script src="../../../static/jsonscript/mainMenuOperation.js"></script>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,10 +10,13 @@
     <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
     <title th:text="${htmlThymeleafPage.getTitle()}">Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
-    <link rel="stylesheet" href="common/css/commonStyle.css" th:href="@{/static/common/css/commonStyle.css}">
+    <link rel="stylesheet" href="/static/common/css/commonStyle.css" th:href="@{/static/common/css/commonStyle.css}"/>
 <!--    <link rel="stylesheet" href="rootpages/css/style.css" th:href="@{/static/rootpages/css/style.css}">-->
 </head>
 <body>
@@ -105,12 +109,31 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="v-pills-main-menu" role="tabpanel" aria-labelledby="v-pills-main-menu-tab">
-                <div id="jstree-menu-div"></div>
-                <script>
-                    $(window.document).ready(function () {
-                        loadMenuTreeFromServer();
-                    });
-                </script>
+                <div class="flex-container w-100 h-100-vh">
+                    <div class="flex-container w-100">
+                        <button type="button" class="btn btn-primary">Добавить</button>
+                        <button type="button" class="btn btn-primary">Удалить</button>
+                        <button type="button" class="btn btn-primary">Редактировать</button>
+                    </div>
+                    <div class="card w-50 h-100-vh">
+                        <div class="card-body">
+                            <div id="jstree-menu-div"></div>
+                            <script>
+                                $(window.document).ready(function () {
+                                    loadMenuTreeFromServer();
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="card w-50 h-100-vh">
+                        <pre class="info-area">
+
+                        </pre>
+                    </div>
+                </div>
+
+
+
             </div>
             <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, modi.</div>
             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur culpa cumque cupiditate eum facilis ipsam labore magni quos. A beatae cumque fugiat provident quis quisquam saepe velit? Accusamus cum dignissimos eaque, eum non odit quos repellat similique totam ut! Alias quia quis ullam. Amet at, debitis distinctio dolor doloremque, error ex excepturi explicabo fuga impedit, ipsam molestias mollitia nemo quisquam rem sequi tenetur vel. Accusamus adipisci consequatur cupiditate et harum laboriosam laudantium mollitia nam non nulla quis similique tempora, voluptate! Ab aliquid animi at atque delectus deleniti dignissimos et exercitationem id magni officiis optio praesentium quae quidem quod recusandae repellat sed, voluptatum? Cum cumque dolorem est fugiat odit possimus praesentium totam vitae! Accusantium aliquid architecto atque commodi delectus dolorum modi nam nostrum quaerat veniam? Amet architecto cupiditate doloremque esse est, facere in itaque molestias quaerat qui rem sunt tenetur! Alias asperiores aspernatur exercitationem minus neque nostrum similique veniam voluptatum. Ad aliquid amet aspernatur commodi consequatur corporis dicta dolore dolores eligendi et ex exercitationem expedita fuga in incidunt inventore itaque minima molestiae nam, nostrum nulla numquam omnis provident quae quaerat quod, ratione reiciendis sapiente sed sequi similique sint tempora tempore temporibus tenetur, ullam veritatis. Aliquam aperiam architecto beatae corporis debitis eos, ipsum iste itaque, iure iusto libero modi molestiae molestias nesciunt nihil obcaecati porro provident similique temporibus tenetur unde voluptas voluptate voluptatibus? Dolor facilis, impedit in molestias nihil officia quis quos sit voluptate? Aliquam asperiores cupiditate dolorem harum id illo minus neque nobis, nostrum. Aliquam consequatur delectus exercitationem nemo rerum? Aperiam aut consequatur consequuntur dignissimos est expedita, fugit ipsum iusto non perspiciatis repellat repudiandae voluptatum! Consequatur cum dolorem, doloribus ea est in libero nemo quia quod rem repellat reprehenderit velit voluptates. Ad delectus esse, expedita illo laborum saepe similique? Aliquam culpa deleniti dicta ducimus earum eos fugiat inventore labore natus nobis nostrum optio perspiciatis quam quo, vel? Ad autem beatae consectetur corporis debitis deserunt dicta doloremque dolores enim, exercitationem expedita incidunt ipsa laboriosam modi neque nesciunt non odio omnis perferendis, provident quasi quo rem rerum sed similique, tempore vel. Consequuntur cumque nemo optio possimus provident, quae quia voluptates voluptatibus. Aperiam atque, blanditiis doloremque dolores eos facere harum impedit libero magnam minima minus necessitatibus obcaecati quae quaerat, quasi quia quibusdam quis quo quos, sed sunt totam ullam unde vero voluptatum! Animi asperiores, consectetur consequuntur enim fugit impedit in labore nisi quos. Alias at atque cum delectus distinctio dolorem excepturi explicabo id itaque libero magnam non officia, pariatur, ratione sunt, ullam veritatis voluptatum? Alias blanditiis cumque dignissimos earum illo iste laborum maiores, modi natus voluptate. Ab accusantium atque autem debitis dolores eum id iste labore maxime minima natus necessitatibus non optio, porro possimus quam quas recusandae sed sint, vitae voluptatem, voluptates voluptatibus. Aliquid aut culpa cupiditate deleniti deserunt eaque maiores nihil nostrum, perspiciatis quisquam repellat ullam? Accusantium animi blanditiis deleniti eos error esse facilis ipsum iusto laudantium libero, odit quasi repellat veniam. Ab ad aut doloribus eveniet excepturi inventore iste molestias nobis nostrum obcaecati, provident quasi sed similique tenetur ut! Esse harum, totam.</div>
@@ -120,14 +143,16 @@
 
 
     </div>
-    <script src="/static/jsonscript/requestDelete.js" th:href="@{/static/jsonscript/requestDelete.js}"></script>
-    <script src="/static/jsonscript/requestGetAndReturnJson.js" th:href="@{/static/jsonscript/requestGetAndReturnJson.js}"></script>
-    <script src="/static/jsonscript/requestPutJson.js" th:href="@{/static/jsonscript/requestPutJson.js}"></script>
-    <script src="/static/jsonscript/rolesOperations.js" th:href="@{/static/jsonscript/rolesOperations.js}"></script>
-    <script src="/static/jsonscript/userOperations.js" th:href="@{/static/jsonscript/userOperations.js}"></script>
-    <script src="/static/jsonscript/mainMenuOperation.js" th:href="@{/static/jsonscript/mainMenuOperation.js}"></script>
+    <script src="/static/jsonscript/requestDelete.js" th:src="@{/static/jsonscript/requestDelete.js}"></script>
+    <script src="/static/jsonscript/requestGetAndReturnJson.js" th:src="@{/static/jsonscript/requestGetAndReturnJson.js}"></script>
+    <script src="/static/jsonscript/requestPutJson.js" th:src="@{/static/jsonscript/requestPutJson.js}"></script>
+    <script src="/static/jsonscript/rolesOperations.js" th:src="@{/static/jsonscript/rolesOperations.js}"></script>
+    <script src="/static/jsonscript/userOperations.js" th:src="@{/static/jsonscript/userOperations.js}"></script>
+    <script src="/static/jsonscript/mainMenuOperation.js" th:src="@{/static/jsonscript/mainMenuOperation.js}"></script>
 
-    <script src="/static/jsonscript/loadUsersTable.js" th:href="@{/static/jsonscript/loadUsersTable.js}"></script>
+    <script src="/static/jsTree/jstree.js" th:src="@{/static/jsTree/jstree.js}"></script>
+
+    <script src="/static/jsonscript/loadUsersTable.js" th:src="@{/static/jsonscript/loadUsersTable.js}"></script>
     <script th:inline="javascript">
         let scriptRef = [[${userTableRef}]];
         $(window.document).ready(function() {
@@ -139,7 +164,7 @@
     </script>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>

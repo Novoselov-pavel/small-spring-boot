@@ -1,6 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
@@ -68,19 +69,33 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
     /**
      * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя
      *
-     * @param user пользователь
      * @return Json строка
      */
     @Override
-    public String getNavHeaderElementsAsJson(User user) throws JsonProcessingException {
-        List<HtmlNavElement> currentList = getNavHeaderElements(user);
+    public String getNavHeaderElementsAsJson() throws JsonProcessingException {
+        List<HtmlNavElement> currentList = repository.findByParentIsNullOrderByElementOrder();
         ObjectMapper mapper = new ObjectMapper();
         String value = mapper.writeValueAsString(currentList);
         return value;
+    }
+
+    /**
+     * Востанавливает Parent и сохраняет элементы в БД
+     *
+     * @param json строка в формате Json
+     * @throws JsonProcessingException при ошибке парсинга
+     */
+    @Override
+    public void saveNavHeaderElementsFromJson(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<HtmlNavElement> list = mapper.readValue(json, new TypeReference<List<HtmlNavElement>>(){});
+        list.forEach(x->saveElement(x));
     }
 
     @Autowired
     public void setRepository(HtmlNavElementsRepository repository) {
         this.repository = repository;
     }
+
+
 }

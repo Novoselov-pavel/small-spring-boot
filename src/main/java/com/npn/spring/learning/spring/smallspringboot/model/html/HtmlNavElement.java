@@ -24,6 +24,7 @@ public class HtmlNavElement {
     @Column(name="id", updatable = false, nullable = false)
     private Long id;
 
+
     @Column(name = "item_name", unique = true, nullable = false)
     private String name;
 

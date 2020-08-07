@@ -27,6 +27,9 @@ public class AdminScriptController {
     @Autowired
     UserAuthorityInterface authorityService;
 
+    @Autowired
+    HtmlNavElementServiceInterface htmlNavElementService;
+
     @GetMapping(value = "/admin/userTables", produces = {"application/json;charset=UTF-8"})
     public @ResponseBody String getUserTables(Authentication authentication) {
         if (!isAdmin(authentication)) return "{}";
@@ -75,6 +78,20 @@ public class AdminScriptController {
         }
         userService.deleteUser(id);
         return "{}";
+    }
+
+    @GetMapping(value = "admin/mainMenu", produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody String getAllHtmlNavElement(Authentication authentication){
+        if (!isAdmin(authentication)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
+        }
+        try {
+            String s = htmlNavElementService.getNavHeaderElementsAsJson();
+            return s;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // TODO когда будут идеи по логгированию
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Json processing error", e);
+        }
     }
 
     /**

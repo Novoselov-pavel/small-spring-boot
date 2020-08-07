@@ -38,8 +38,16 @@ public interface HtmlNavElementServiceInterface {
     /**
      * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя
      *
-     * @param user пользователь
      * @return Json строка
+     * @throws JsonProcessingException при ошибке парсинга
      */
-    String getNavHeaderElementsAsJson(User user) throws JsonProcessingException;
+    String getNavHeaderElementsAsJson() throws JsonProcessingException;
+
+    /**
+     * Востанавливает Parent и сохраняет элементы в БД
+     *
+     * @param json строка в формате Json
+     * @throws JsonProcessingException при ошибке парсинга
+     */
+    public void saveNavHeaderElementsFromJson(String json) throws JsonProcessingException;
 }
