@@ -1,6 +1,7 @@
 const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
     const mainRef = jsonRef;
     const tableBodyClassRef = tableBodyClass;
+    const modalFormRef = 'form[class="modifyUserForm"]';
 
     /**
      * Заполнение таблицы и добавление обработчика двойного нажатия на строчку
@@ -129,8 +130,8 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
          */
         const addRoles = (data) => {
             let roleCount = 0;
-            let form = $('form[class="modifyUserForm"]');
-            $('.div-roles').remove();
+            let form = $(modalFormRef);
+            form.children().filter('.div-roles').remove();
           data.forEach(x=>{
               let element = '<div class="form-check div-roles">' +
                   '<input name="role'+roleCount+'" class="form-check-input" type="checkbox" value="" id="'+x.role+'">' +
@@ -156,7 +157,7 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
          * Получает объект пользователя из модального окна для правки на сервер
          */
         const getDataForSaveUser = () => {
-            let form = $('form[class="modifyUserForm"]');
+            let form = $(modalFormRef);
 
             let sendUser = {};
             sendUser.id = form.find('input[name="id"]').val();
@@ -166,7 +167,7 @@ const loadUserTableFromJson = (tableBodyClass, jsonRef) =>{
             sendUser.accountNonLocked = form.find('input[name="accountNonLocked"]').prop('checked');
             sendUser.credentialsNonExpired = form.find('input[name="credentialsNonExpired"]').prop('checked');
             sendUser.enabled = form.find('input[name="enabled"]').prop('checked');
-            sendUser.roles = $.map($('.div-roles').children().filter(':checked'), (x) => $(x).prop('id'));
+            sendUser.roles = $.map(form.children().filter('.div-roles').children().filter(':checked'), (x) => $(x).prop('id'));
             return sendUser;
         };
 
