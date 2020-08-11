@@ -1,12 +1,14 @@
 package com.npn.spring.learning.spring.smallspringboot.model.html.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElement;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.HtmlNavElementsRepository;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,10 +88,22 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      * @throws JsonProcessingException при ошибке парсинга
      */
     @Override
-    public void saveNavHeaderElementsFromJson(String json) throws JsonProcessingException {
+    public void saveNavHeaderElementFromJson(String json) throws JsonProcessingException, ParseException {
         ObjectMapper mapper = new ObjectMapper();
-        List<HtmlNavElement> list = mapper.readValue(json, new TypeReference<List<HtmlNavElement>>(){});
-        list.forEach(x->saveElement(x));
+        HtmlNavElement element = mapper.readValue(json, HtmlNavElement.class);
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(json);
+        String parentIdString = jsonObject.get("parentId").toString();
+        HtmlNavElement parent = null;
+        if (!parentIdString.equals("#")) {
+            parent = loadById(Long.valueOf(parentIdString));
+        }
+        element.setParent(parent);
+
+        if (element.getId()!=null){
+            element.setChildren(loadById(element.getId()).getChildren());
+        }
+        saveElement(element);
     }
 
     @Autowired

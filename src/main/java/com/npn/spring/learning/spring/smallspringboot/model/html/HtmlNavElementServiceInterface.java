@@ -2,6 +2,7 @@ package com.npn.spring.learning.spring.smallspringboot.model.html;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
+import org.json.simple.parser.ParseException;
 
 import java.util.List;
 
@@ -49,5 +50,5 @@ public interface HtmlNavElementServiceInterface {
      * @param json строка в формате Json
      * @throws JsonProcessingException при ошибке парсинга
      */
-    public void saveNavHeaderElementsFromJson(String json) throws JsonProcessingException;
+    public void saveNavHeaderElementFromJson(String json) throws JsonProcessingException, ParseException;
 }

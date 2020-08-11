@@ -93,6 +93,20 @@ public class AdminScriptController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Json processing error", e);
         }
     }
+    
+    @PutMapping(value = "admin/mainMenu/saveNavMenuElement", produces = {"application/json;charset=UTF-8"}, consumes = {"application/json;charset=UTF-8"})
+    public @ResponseBody String saveHtmlNavElement(Authentication authentication, @RequestBody String body) {
+        if (!isAdmin(authentication)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
+        }
+        try {
+            htmlNavElementService.saveNavHeaderElementFromJson(body);
+            return "{}";
+        } catch (JsonProcessingException | ParseException e) {
+            e.printStackTrace(); // TODO когда будут идеи по логгированию
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Json processing error", e);
+        }
+    }
 
     /**
      * Эта функция в общем излишняя, так как у нас есть @Secured("ADMIN_ROLE").
@@ -113,5 +127,5 @@ public class AdminScriptController {
         }
         return true;
     }
-
+    
 }

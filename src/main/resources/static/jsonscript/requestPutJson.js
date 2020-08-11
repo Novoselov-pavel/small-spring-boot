@@ -14,7 +14,7 @@ const requestPutJson = (href, data) => {
         body: JSON.stringify(data)
     }).then((response) =>{
         if (response.ok) {
-            return;
+            return response.json();
         } else {
             throw new Error('Response Not OK');
         }

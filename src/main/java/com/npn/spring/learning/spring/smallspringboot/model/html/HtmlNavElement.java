@@ -3,6 +3,7 @@ package com.npn.spring.learning.spring.smallspringboot.model.html;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Класс описывающий элемент навигационного меню
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "header_items")
 public class HtmlNavElement {
