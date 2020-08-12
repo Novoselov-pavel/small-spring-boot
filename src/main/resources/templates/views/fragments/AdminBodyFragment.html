@@ -141,8 +141,8 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body modifyUserBody">
-                                <form class="modifyElementForm">
+                            <div class="modal-body">
+                                <form class="needs-validation" novalidate id="modifyElementForm">
                                     <div class="form-group">
                                         <label for="el_id">Id</label>
                                         <input name="el_id" type="text" class="form-control" id="el_id" readonly>
@@ -151,7 +151,7 @@
                                         <label for="el_name">Имя элемента</label>
                                         <input name="el_name" type="text" class="form-control" id="el_name">
                                         <div class="invalid-feedback">
-                                            Такое имя уже существует.
+                                            Имя неуказано или уже существует.
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -161,6 +161,9 @@
                                             <option>ELEMENT</option>
                                             <option>DIVIDER</option>
                                         </select>
+                                        <div class="invalid-feedback">
+                                            Неверный тип элемента.
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="el_href">Ссылка элемента</label>
@@ -186,7 +189,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary closeNavElementModalFormButton" data-dismiss="modal">Отмена</button>
-                                <button type="button" class="btn btn-primary saveNavElement">Сохранить</button>
+                                <button type="submit" form="modifyElementForm" class="btn btn-primary saveNavElement">Сохранить</button>
                             </div>
                         </div>
                     </div>

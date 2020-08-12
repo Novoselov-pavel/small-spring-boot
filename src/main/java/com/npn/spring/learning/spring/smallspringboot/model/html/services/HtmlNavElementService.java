@@ -99,11 +99,21 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
             parent = loadById(Long.valueOf(parentIdString));
         }
         element.setParent(parent);
-
-        if (element.getId()!=null){
-            element.setChildren(loadById(element.getId()).getChildren());
-        }
+//
+//        if (element.getId()!=null){
+//            element.setChildren(loadById(element.getId()).getChildren());
+//        }
         saveElement(element);
+    }
+
+    /**
+     * Удаляет из базы данных элемент меню
+     *
+     * @param id удаляемого элемента
+     */
+    @Override
+    public void deleteNavHeaderElement(Long id) {
+        repository.deleteById(id);
     }
 
     @Autowired

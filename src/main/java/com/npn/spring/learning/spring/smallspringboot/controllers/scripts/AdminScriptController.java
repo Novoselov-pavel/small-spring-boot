@@ -108,6 +108,15 @@ public class AdminScriptController {
         }
     }
 
+    @DeleteMapping (value = "/admin/mainMenu/deleteNavMenuElement/{id}", produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody String deleteHtmlNavElement(@PathVariable("id") Long id, Authentication authentication) {
+        if (!isAdmin(authentication)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
+        }
+        htmlNavElementService.deleteNavHeaderElement(id);
+        return "{}";
+    }
+
     /**
      * Эта функция в общем излишняя, так как у нас есть @Secured("ADMIN_ROLE").
      * Но, так как эта работа с критически важной информацией, мы перестрахуемся.

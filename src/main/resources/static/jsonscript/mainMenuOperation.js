@@ -19,7 +19,7 @@ const objectToModalMenuMapper = {
 
 const mainMenuJsonHref='/admin/mainMenu';
 const saveElementHref = mainMenuJsonHref+"/saveNavMenuElement";
-
+const deleteElementHref = mainMenuJsonHref+"/deleteNavMenuElement/";
 
 /**
  * Селекторы элементов формы
@@ -27,7 +27,7 @@ const saveElementHref = mainMenuJsonHref+"/saveNavMenuElement";
  */
 const mainMenuTreeSelector='#jstree-menu-div';
 const modalDivSelector ="#navMenuElementInfo";
-const modalFormSelector = '.modifyElementForm';
+const modalFormSelector = '#modifyElementForm';
 const saveMenuItemSelector = '.saveNavElement';
 
 /**
@@ -38,7 +38,6 @@ const addNavMenuButtonSelector ='.addNavMenuButton';
 const addNavChildElementButtonSelector = '.addNavChildElementButton';
 const deleteNavElementSelector = '.deleteNavElement';
 const modifyNavElementSelector = '.modifyNavElement';
-const saveTreeSelector = '.saveTree';
 const closeNavElementModalFormButton = '.closeNavElementModalFormButton';
 
 const loadMenuTreeFromServer = () => {
@@ -72,7 +71,9 @@ const loadMenuTreeFromServer = () => {
             "core": {
                 'check_callback': function checkCallback(operation, node, node_parent, node_position, more) {
                     // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
-                    //TODO
+                    if (operation === 'move_node'|| operation === 'rename_node' || operation === 'copy_node' || operation === 'edit') {
+                        return false;
+                    }
                     return true;
                 },
                 "themes" : { "stripes" : true },
@@ -93,12 +94,13 @@ const loadMenuTreeFromServer = () => {
      */
     const addEventHandlerToButtons = () =>{
         $(modifyNavElementSelector).on('click', ()=>loadModalElMenu()
+            .then(()=>clearModalMenu())
             .then(()=>getDataFromSelectedElement())
             .then((data)=>(data!==null)?fillModalMenuFromData(data): new Error('No rows selected'))
             .then(()=>addEventToSaveModalMenuButton(false))
             .then(()=>openModal())
             .catch((error)=>console.log(error)));
-        $(addNavChildElementButtonSelector).on('click',()=>loadModalElMenu()
+        $(addNavChildElementButtonSelector).on('click',()=>!isCanCreateChild()? null : loadModalElMenu()
             .then(()=>clearModalMenu())
             .then(()=>addEventToSaveModalMenuButton(true))
             .then(()=>openModal())
@@ -108,6 +110,7 @@ const loadMenuTreeFromServer = () => {
             .then(()=>addEventToSaveModalMenuButton(false))
             .then(()=>openModal())
             .catch(error=>console.log(error)));
+        $(deleteNavElementSelector).on('click',()=>deleteModalElMenu());
         return "";
     };
 
@@ -125,6 +128,42 @@ const loadMenuTreeFromServer = () => {
         .catch((error)=>console.log(error));
 };
 
+/**
+ * Проверяет, можно ли создать дочерний элемент
+ * @return {boolean}
+ */
+const isCanCreateChild = () =>{
+    let tree = $(mainMenuTreeSelector).jstree(true);
+    let selElements = tree.get_selected(true);
+    if (selElements.length===0) return false;
+    let data = selElements[0].original;
+
+    return data.type === 'MENU';
+};
+
+/**
+ * Удаляет элемент
+ * @returns {Promise<void>}
+ */
+const deleteModalElMenu = () => {
+    return new Promise(function (resolve, reject) {
+        let tree = $(mainMenuTreeSelector).jstree(true);
+        let selElements = tree.get_selected(true);
+        if (selElements.length===0) return resolve(null);
+
+        let id = selElements[0].original.id;
+        let name = selElements[0].original.text;
+        let acceptDelete = confirm(`Удалить элемент меню '${name}'?`);
+        if (!acceptDelete) return resolve(null);
+        return requestDelete(deleteElementHref+id)
+            .then(()=>requestGetAndReturnJson(mainMenuJsonHref))
+            .then((data)=>{
+                tree.settings.core.data = data;
+                tree.refresh();
+                return "";
+            }).catch(error=>console.log(error));
+    });
+};
 
 /**
  * Создание пустого модального окна
@@ -167,14 +206,17 @@ const openModal = () =>{
  * очищает данные модального окна
  */
 const clearModalMenu = () =>{
+    let form = $(modalFormSelector);
     for (let entry in objectToModalMenuMapper) {
-        $(modalFormSelector).children().find(objectToModalMenuMapper[entry]).val("");
+        form.children().find(objectToModalMenuMapper[entry]).val("");
     }
-    [...$(modalFormSelector)
-        .find('.roles-input')
-    ].forEach(x=>{
+    [...form.find('.roles-input')].forEach(x=>{
         $(x).prop('checked', false);
     });
+    form.find('#el_name').removeClass('is-invalid');
+    form.find('#el_type').removeClass('is-invalid');
+    form.find('#el_order').removeClass('is-invalid');
+    form.find('#el_text').removeClass('is-invalid');
 }
 
 /**
@@ -215,8 +257,97 @@ const addEventToSaveModalMenuButton = (isSaveChild) =>{
     } else {
         parentId = tree.get_selected(true)[0].parent;
     }
-    $(saveMenuItemSelector).on('click',()=>addElementToTreeData(parentId));
+    $(modalFormSelector).on('submit', function (event) {
+        event.preventDefault();
+        if (!isModalFormReady(parentId)){
+            event.stopPropagation();
+        } else {
+            addElementToTreeData(parentId);
+        }
+    })
+    // $(saveMenuItemSelector).on('click',()=>addElementToTreeData(parentId));
 };
+
+/**
+ * Проверяет форму на правильность, true если форма верна, false если есть ошибки.
+ * @return boolean
+ */
+const isModalFormReady = (parentId) =>{
+    let tree = $(mainMenuTreeSelector).jstree(true);
+    let data = tree.settings.core.data;
+    let form = $(modalFormSelector);
+    let id = form.find('#el_id').val();
+
+    const reducer = (value) => {
+        return [value,...value.children.flatMap((x)=>reducer(x))];
+    };
+    let flatData = data.flatMap((x)=>reducer(x));
+
+    const isNameValid = (id) => {
+        let name = form.find('#el_name').val();
+        if (name === '') return false;
+
+        let filterData = flatData.filter(x=>x.name === name);
+        if (filterData.length>1) {
+            return false;
+        } else if (filterData.length === 1 && filterData[0].id.toString()!==id){
+            return false;
+        }
+        return true;
+    };
+
+    const isTypeValid = (parentId) =>{
+        let type = form.find('#el_type').val();
+        if (parentId==='#'){
+            return type!=='DIVIDER';
+        } else {
+            return type!=='MENU';
+        }
+    };
+
+    const isOrderValid = () =>{
+        let order = form.find('#el_order').val();
+
+        return /^\d+$/.test(order);
+    };
+
+    const isTextValid = () =>{
+        let text = form.find('#el_text').val();
+        return text !== '';
+    };
+
+    let retVal = true;
+
+    if (!isNameValid(id)){
+        form.find('#el_name').addClass('is-invalid');
+        retVal = false;
+    } else {
+        form.find('#el_name').removeClass('is-invalid');
+    }
+    if (!isTypeValid(parentId)){
+        form.find('#el_type').addClass('is-invalid');
+        retVal = false;
+    } else {
+        form.find('#el_type').removeClass('is-invalid');
+    }
+
+    if (!isOrderValid()){
+        form.find('#el_order').addClass('is-invalid');
+        retVal = false;
+    } else {
+        form.find('#el_order').removeClass('is-invalid');
+    }
+
+    if (!isTextValid()){
+        form.find('#el_text').addClass('is-invalid');
+        retVal = false;
+    } else {
+        form.find('#el_text').removeClass('is-invalid');
+    }
+    return retVal;
+};
+
+
 
 /**
  * Сохраняет элемент

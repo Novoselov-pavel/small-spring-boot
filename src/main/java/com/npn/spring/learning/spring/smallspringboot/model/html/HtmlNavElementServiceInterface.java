@@ -51,4 +51,10 @@ public interface HtmlNavElementServiceInterface {
      * @throws JsonProcessingException при ошибке парсинга
      */
     public void saveNavHeaderElementFromJson(String json) throws JsonProcessingException, ParseException;
+
+    /**
+     * Удаляет из базы данных элемент меню
+     * @param id удаляемого элемента
+     */
+    public void deleteNavHeaderElement(Long id);
 }
