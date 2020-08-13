@@ -13,5 +13,4 @@ public interface HtmlNavElementsRepository extends JpaRepository<HtmlNavElement,
 
     List<HtmlNavElement> findByParentIsNullOrderByElementOrder();
 
-
 }

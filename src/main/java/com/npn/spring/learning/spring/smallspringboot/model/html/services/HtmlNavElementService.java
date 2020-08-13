@@ -10,9 +10,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -21,8 +25,102 @@ import java.util.stream.Collectors;
 @Service
 public class HtmlNavElementService implements HtmlNavElementServiceInterface {
 
+    /**
+     * Срок обновления кэша, в милисекундах
+     */
+    private static final Long CACHE_UPDATING_PERIOD = 20*60*1000L;
+
+    /**
+     * Объект локер
+     */
+    private static final ReentrantReadWriteLock isUpdate  = new ReentrantReadWriteLock();
+
+    /**
+     * Кэшированные записи из БД упорядоченные по ElementOrder
+     */
+    private static final CopyOnWriteArrayList<HtmlNavElement> cacheList = new CopyOnWriteArrayList<>();
+
+    /**
+     * Требуется ли обновление кэша, после выполнения операций добавления/обновления ....
+     */
+    private static volatile boolean needUpdate = true;
+
+    /**
+     * Последняя дата обновления
+     */
+    private static volatile Date lasUpdatingDate = null;
+
 
     private HtmlNavElementsRepository repository;
+
+    /**
+     * Находит корневые элементы, отдает отсортиованную по ElementOrder копию списка
+     * @return List<HtmlNavElement>
+     */
+    private List<HtmlNavElement> findByParentIsNullOrderByElementOrderCached() {
+        updateCache();
+        isUpdate.readLock().lock();
+        try {
+            return cacheList.stream().filter(x->x.getParent()==null).collect(Collectors.toList());
+        } finally {
+            isUpdate.readLock().unlock();
+        }
+
+    }
+
+    /**
+     * Находит элемент по Id
+     * @param id id элемента
+     * @return HtmlNavElement или null
+     */
+    private HtmlNavElement findByIdCached(final Long id){
+        updateCache();
+        isUpdate.readLock().lock();
+        try {
+            return cacheList.stream().filter(x->x.getId().equals(id)).findFirst().orElse(null);
+        } finally {
+            isUpdate.readLock().unlock();
+        }
+    }
+
+    /**
+     * Обновление кэша
+     */
+    private void updateCache() {
+        Date currentDate = new Date();
+        if (needUpdate || lasUpdatingDate == null || currentDate.getTime()>lasUpdatingDate.getTime()+CACHE_UPDATING_PERIOD) {
+            isUpdate.writeLock().lock();
+            try {
+                if (needUpdate || lasUpdatingDate == null || currentDate.getTime()>lasUpdatingDate.getTime()+CACHE_UPDATING_PERIOD) {
+                    cacheList.clear();
+                    cacheList.addAll(repository.findAll(Sort.by(Sort.Direction.ASC,"elementOrder")));
+
+                    needUpdate = false;
+                    lasUpdatingDate = currentDate;
+                }
+
+            } finally {
+                isUpdate.writeLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Получает HtmlNavElement элемент по name из кэша
+     *
+     * @param name name
+     * @return HtmlNavElement or null
+     */
+    private HtmlNavElement findFirstByNameOrderByElementOrderCached(final String name) {
+        updateCache();
+        isUpdate.readLock().lock();
+        try {
+            return cacheList.stream().filter(x->x.getName().equals(name.toLowerCase())).findFirst().orElse(null);
+        } finally {
+            isUpdate.readLock().unlock();
+        }
+    }
+
 
     /**
      * Получает HtmlNavElement элемент по Id
@@ -30,7 +128,7 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      * @return HtmlNavElement or null
      */
     public HtmlNavElement loadById(long id) {
-        return repository.findById(id).orElse(null);
+        return findByIdCached(id);
     }
 
     /**
@@ -40,7 +138,7 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      */
     public HtmlNavElement loadByName(String name) {
         if (name == null) throw new IllegalArgumentException("Null name in loadByName() is forbidden");
-        return repository.findFirstByNameOrderByElementOrder(name.toLowerCase());
+        return findFirstByNameOrderByElementOrderCached(name);
     }
 
 
@@ -50,7 +148,13 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      */
     public void saveElement(HtmlNavElement element){
         if (element == null) throw new IllegalArgumentException("Null name in saveElement() is forbidden");
-        repository.save(element);
+        isUpdate.writeLock().lock();
+        try {
+            needUpdate = true;
+            repository.save(element);
+        } finally {
+            isUpdate.writeLock().unlock();
+        }
     }
 
 
@@ -60,11 +164,11 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      * @return List<HtmlNavElement>
      */
     public List<HtmlNavElement> getNavHeaderElements(User user) {
-        List<HtmlNavElement> currentList = repository.findByParentIsNullOrderByElementOrder();
+        List<HtmlNavElement> currentList = findByParentIsNullOrderByElementOrderCached();
         return currentList
                 .stream()
-                .map(x->x.getElementForUserAuthority(user))
-                .filter(x->x!=null)
+                .map(x -> x.getElementForUserAuthority(user))
+                .filter(x -> x != null)
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +179,7 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      */
     @Override
     public String getNavHeaderElementsAsJson() throws JsonProcessingException {
-        List<HtmlNavElement> currentList = repository.findByParentIsNullOrderByElementOrder();
+        List<HtmlNavElement> currentList = findByParentIsNullOrderByElementOrderCached();
         ObjectMapper mapper = new ObjectMapper();
         String value = mapper.writeValueAsString(currentList);
         return value;
@@ -99,10 +203,7 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
             parent = loadById(Long.valueOf(parentIdString));
         }
         element.setParent(parent);
-//
-//        if (element.getId()!=null){
-//            element.setChildren(loadById(element.getId()).getChildren());
-//        }
+
         saveElement(element);
     }
 
@@ -113,7 +214,14 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
      */
     @Override
     public void deleteNavHeaderElement(Long id) {
-        repository.deleteById(id);
+        isUpdate.writeLock().lock();
+        try {
+            needUpdate = true;
+            repository.deleteById(id);
+        } finally {
+            isUpdate.writeLock().unlock();
+        }
+
     }
 
     @Autowired

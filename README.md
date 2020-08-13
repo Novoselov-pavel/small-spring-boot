@@ -14,6 +14,9 @@
 
 <details><summary>История версий</summary>
 
+<h5>Версия 0.0.2.a</h5>
+<p>Добавлено кеширование для HtmlNavElementService из пакета package com.npn.spring.learning.spring.smallspringboot.model.html.services.</p>
+
 <h5>Версия 0.0.2</h5>
 <p>Добавлена возможность настройки элементов меню на странице администратора. Меню выводится в виде 
 дерева с помощью плагина <a href="https://www.jstree.com">jstree</a>.</p>
