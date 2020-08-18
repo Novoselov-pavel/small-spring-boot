@@ -11,6 +11,8 @@
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
 
 <h5>В процессе разработки...</h5>
+<h5>Текущая версия требует изменения базы данных, последняя верся, которая запускается на текущем файле 
+конфигурации - 0.0.2.a</h5>
 
 <details><summary>История версий</summary>
 

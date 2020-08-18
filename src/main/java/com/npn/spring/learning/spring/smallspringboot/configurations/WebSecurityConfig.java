@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/","/home","/registry","/static/**", "/error")
+                .antMatchers("/","/home","/registry","/static/**", "/error", "/authorisationMail")
                 .anonymous()
                 .antMatchers(HttpMethod.POST,"/registry")
                 .anonymous()
@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll().deleteCookies("JSESSIONID")
                 .and().httpBasic().and()
-                .sessionManagement() // реализация позможности захода только с одного адреса,для корректной работы нужно в пользователе
+                .sessionManagement() // реализация возможности захода только с одного адреса,для корректной работы нужно в пользователе
                                      // правильно реальзовать equals и hashCode
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
