@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Служба для работы с данными письма авторизации
@@ -92,7 +93,19 @@ public class AuthorisationMailDataService implements AuthorisationMailDataInterf
                 .findFirst().orElse(null);
     }
 
+    /**
+     * Получает список всех AuthorisationMailData
+     *
+     * @return List<AuthorisationMailData>
+     */
+    @Override
+    public List<AuthorisationMailData> getAllAuthorisationMailData() {
+        return repository.findAll();
+    }
+
     private boolean isExpired(AuthorisationMailData data, Date today){
         return today.getTime()<=data.getExpiredDate();
     }
+
+
 }

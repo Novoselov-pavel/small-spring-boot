@@ -1,6 +1,7 @@
 package com.npn.spring.learning.spring.smallspringboot.model.dbservices;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.UserAlreadyExist;
 import org.json.simple.parser.ParseException;
@@ -59,4 +60,11 @@ public interface UserServiceInterface {
      * @param id id пользователя
      */
     void deleteUser(Long id);
+
+    /**
+     * Возвращает всех пользователей, аккаунты которых не активированы
+     * @param list список уже отосланных писем
+     * @return список пользователей
+     */
+    List<User> getAllNonConfirmedUser(List<AuthorisationMailData> list);
 }

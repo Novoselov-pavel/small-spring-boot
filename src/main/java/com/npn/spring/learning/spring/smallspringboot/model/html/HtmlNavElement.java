@@ -45,7 +45,7 @@ public class HtmlNavElement {
     @JoinTable(name = "header_items_authority",
             joinColumns = @JoinColumn(name = "header_item_id", referencedColumnName = "id"),
             inverseJoinColumns =@JoinColumn(name = "role_id", referencedColumnName = "id") )
-    private final Set<MyUserAuthority> authorities = new CopyOnWriteArraySet();
+    private final Set<MyUserAuthority> authorities = new CopyOnWriteArraySet<>();
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

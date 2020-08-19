@@ -3,6 +3,8 @@ package com.npn.spring.learning.spring.smallspringboot.model.dbservices;
 import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.AuthorisationEmailExpired;
 
+import java.util.List;
+
 /**
  * Интрефейс для работы с данными письма авторизации
  */
@@ -44,4 +46,12 @@ public interface AuthorisationMailDataInterface {
      * @return AuthorisationMailData или null
      */
     AuthorisationMailData getAuthorisationMailDataByUserNameToken(final String userNameToken);
+
+    /**
+     * Получает список всех AuthorisationMailData
+     *
+     * @return List<AuthorisationMailData>
+     */
+    List<AuthorisationMailData> getAllAuthorisationMailData();
+
 }

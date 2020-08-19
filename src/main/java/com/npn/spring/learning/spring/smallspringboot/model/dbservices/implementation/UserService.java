@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserAuthorityInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.UsersRepository;
+import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
@@ -123,6 +124,22 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    /**
+     * Возвращает всех пользователей, аккаунты которых не активированы
+     *
+     * @param list список уже отосланных писем
+     * @return список пользователей
+     */
+    @Override
+    public List<User> getAllNonConfirmedUser(List<AuthorisationMailData> list) {
+        return usersRepository
+                .findAllByEnabledIsFalse()
+                .stream()
+                .filter(x->!isUserInList(x,list))
+                .collect(Collectors.toList());
+    }
+
+
     @Autowired
     public void setUserAuthority(UserAuthorityInterface userAuthority) {
         this.userAuthority = userAuthority;
@@ -158,5 +175,10 @@ public class UserService implements UserServiceInterface {
                 .map(x-> userAuthority.getUserAuthorityByName(x.toString())).collect(Collectors.toList());
         user.changeAuthorities(authorities);
         return user;
+    }
+
+    private boolean isUserInList(final User user, final List<AuthorisationMailData> list) {
+        return list.stream()
+                .anyMatch(x->x.getUserId().equals(user.getId()));
     }
 }
