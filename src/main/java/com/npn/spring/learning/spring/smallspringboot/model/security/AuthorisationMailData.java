@@ -13,8 +13,7 @@ import javax.persistence.*;
 public class AuthorisationMailData {
 
     @Transient
-    @Value("${authorisation.mail.link.template}")
-    private String LINK_TEMPLATE;
+    private String LINK_TEMPLATE = "http://localhost:8080/authorisationMail?userNameToken=%s&authorisationToken=%s";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

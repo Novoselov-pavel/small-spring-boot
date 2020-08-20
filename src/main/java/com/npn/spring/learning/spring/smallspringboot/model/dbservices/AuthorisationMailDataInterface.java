@@ -54,4 +54,11 @@ public interface AuthorisationMailDataInterface {
      */
     List<AuthorisationMailData> getAllAuthorisationMailData();
 
+    /**
+     * Удаляет данные из БД
+     *
+     * @param data
+     */
+    void delete(AuthorisationMailData data);
+
 }

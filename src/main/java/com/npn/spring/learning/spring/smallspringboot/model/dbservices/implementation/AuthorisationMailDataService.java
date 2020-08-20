@@ -103,6 +103,16 @@ public class AuthorisationMailDataService implements AuthorisationMailDataInterf
         return repository.findAll();
     }
 
+    /**
+     * Удаляет данные из БД
+     *
+     * @param data
+     */
+    @Override
+    public void delete(AuthorisationMailData data) {
+        repository.delete(data);
+    }
+
     private boolean isExpired(AuthorisationMailData data, Date today){
         return today.getTime()<=data.getExpiredDate();
     }

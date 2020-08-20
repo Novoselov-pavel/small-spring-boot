@@ -369,3 +369,32 @@ INSERT INTO public.header_items_authority(
 INSERT INTO public.header_items_authority(
 	 header_item_id, role_id)
 	VALUES (10, 2);
+
+-- ------------------------------------------------------------------------------------------------------
+-- создание таблицы для данных авторизационных писем
+
+CREATE TABLE public.authorisation_mail
+(
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    user_id bigint NOT NULL,
+    user_name_token text COLLATE pg_catalog."default" NOT NULL,
+    authorisation_token text COLLATE pg_catalog."default" NOT NULL,
+    expired_date bigint NOT NULL,
+    is_sended boolean NOT NULL,
+    CONSTRAINT authorisation_mail_pkey PRIMARY KEY (id),
+    CONSTRAINT authorisation_mail_usrs_id_fkey FOREIGN KEY (user_id)
+        REFERENCES public.usrs (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.authorisation_mail
+    OWNER to dbadmin;
+
+GRANT ALL ON TABLE public.authorisation_mail TO dbadmin;
+
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.authorisation_mail TO test_users;
