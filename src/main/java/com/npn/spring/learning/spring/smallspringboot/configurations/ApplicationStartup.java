@@ -6,6 +6,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для запуска задачь, после старата сервера
+ */
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 

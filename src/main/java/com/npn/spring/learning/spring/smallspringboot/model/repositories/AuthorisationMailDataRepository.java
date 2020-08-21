@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface AuthorisationMailDataRepository extends JpaRepository<AuthorisationMailData, Long> {
 
     Optional<AuthorisationMailData> findFirstByUserId(Long userId);
+
+    AuthorisationMailData findFirstByAuthorisationTokenAndAndUserNameToken(String authorisationToken, String userNameToken);
 }

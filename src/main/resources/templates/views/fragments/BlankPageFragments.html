@@ -91,6 +91,30 @@
     </div>
 </div>
 
+<div class="center-screen" th:fragment="acceptMessage">
+    <div class="myBlock">
+        <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+        <h4 th:text="${htmlThymeleafPage.getTitle()}" style="text-align: center">Message title</h4>
+        <p hidden th:hidden="${htmlThymeleafPage.isHideMessage()}" th:text="${htmlThymeleafPage.getMessage()}" style="text-align: center">Message</p>
+        <p style="text-align: center"><button class="btn btn-primary" onclick="document.location.href='/login'">Войти</button></p>
+    </div>
+</div>
+<div class="center-screen" th:fragment="failMessage">
+    <div class="myBlock">
+        <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+        <h4 th:text="${htmlThymeleafPage.getTitle()}" style="text-align: center">Message title</h4>
+        <p hidden th:hidden="${htmlThymeleafPage.isHideMessage()}" th:text="${htmlThymeleafPage.getMessage()}" style="text-align: center">Message</p>
+    </div>
+</div>
+<div class="center-screen" th:fragment="authorisationEmailExpired">
+    <div class="myBlock">
+        <!--/*@thymesVar id="htmlThymeleafPage" type="com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage"*/-->
+        <h4 th:text="${htmlThymeleafPage.getTitle()}" style="text-align: center">Message title</h4>
+        <p hidden th:hidden="${htmlThymeleafPage.isHideMessage()}" th:text="${htmlThymeleafPage.getMessage()}" style="text-align: center">Message</p>
+        <p style="text-align: center"><button class="btn btn-primary" th:attr="data-href=${href}" onclick="document.location.href=this.getAttribute('data-href');">Направить письмо повторно</button></p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>

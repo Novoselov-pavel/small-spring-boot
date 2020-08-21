@@ -12,6 +12,12 @@ import java.util.List;
  * Интерфейс по взаимодействию с пользователем
  */
 public interface UserServiceInterface {
+    /**
+     * Возвращает пользователя, если он есть в базе данных, или null
+     * @param id id пользователя
+     * @return User или null
+     */
+    User findById(Long id);
 
     /**
      * Возвращает пользователя, если он есть в базе данных, или null
@@ -67,4 +73,11 @@ public interface UserServiceInterface {
      * @return список пользователей
      */
     List<User> getAllNonConfirmedUser(List<AuthorisationMailData> list);
+
+    /**
+     * Сохраняет пользователя
+     * @param user пользователь
+     * @return сохраненный пользователь
+     */
+    User saveUser(User user);
 }

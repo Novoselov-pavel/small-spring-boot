@@ -2,6 +2,8 @@ package com.npn.spring.learning.spring.smallspringboot.model.dbservices;
 
 import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.AuthorisationEmailExpired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -60,5 +62,20 @@ public interface AuthorisationMailDataInterface {
      * @param data
      */
     void delete(AuthorisationMailData data);
+
+    /**
+     * Удаляет данные из БД
+     *
+     * @param userNameToken
+     * @param authorisationToken
+     */
+    void delete(String userNameToken,String authorisationToken);
+
+    /**
+     * Подтверждает регистрацию пользователя
+     *
+     * @param data
+     */
+    void acceptRegistration(AuthorisationMailData data);
 
 }

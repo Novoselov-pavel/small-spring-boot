@@ -1,8 +1,10 @@
 package com.npn.spring.learning.spring.smallspringboot.model.dbservices.implementation;
 
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.AuthorisationMailDataInterface;
+import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.AuthorisationMailDataRepository;
 import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
+import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.AuthorisationEmailExpired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class AuthorisationMailDataService implements AuthorisationMailDataInterf
 
     @Autowired
     private AuthorisationMailDataRepository repository;
+
+    @Autowired
+    private UserServiceInterface userService;
 
 
     /**
@@ -68,7 +73,7 @@ public class AuthorisationMailDataService implements AuthorisationMailDataInterf
         AuthorisationMailData data = getAuthorisationMailDataByUserNameToken(userNameToken);
         if (data!=null && !isExpired(data,today) ){
             if (data.getAuthorisationToken().equals(authorisationToken)){
-                ///TODO подтверждение авторизации
+                acceptRegistration(data);
                 return true;
             }
 
@@ -113,8 +118,40 @@ public class AuthorisationMailDataService implements AuthorisationMailDataInterf
         repository.delete(data);
     }
 
+    /**
+     * Удаляет данные из БД
+     *
+     * @param userNameToken
+     * @param authorisationToken
+     */
+    @Override
+    public void delete(String userNameToken, String authorisationToken) {
+        AuthorisationMailData data = repository.findFirstByAuthorisationTokenAndAndUserNameToken(authorisationToken,userNameToken);
+        if (data!=null){
+            delete(data);
+        } else {
+            throw new Error("Unexpected error, user not found");
+        }
+    }
+
+    /**
+     * Подтверждает регистрацию пользователя
+     *
+     * @param data
+     */
+    @Override
+    public void acceptRegistration(AuthorisationMailData data) {
+        User user = userService.findById(data.getUserId());
+        if (user!=null){
+            user.setEnabled(true);
+            userService.saveUser(user);
+        } else {
+            throw new Error("Unexpected error, user not found");
+        }
+    }
+
     private boolean isExpired(AuthorisationMailData data, Date today){
-        return today.getTime()<=data.getExpiredDate();
+        return today.getTime()>data.getExpiredDate();
     }
 
 

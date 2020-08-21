@@ -38,6 +38,19 @@ public class UserService implements UserServiceInterface {
 
     /**
      * Возвращает пользователя, если он есть в базе данных, или null
+     *
+     * @param id id пользователя
+     * @return User или null
+     */
+    @Override
+    public User findById(Long id) {
+        return usersRepository
+                .findById(id)
+                .orElse(null);
+    }
+
+    /**
+     * Возвращает пользователя, если он есть в базе данных, или null
      * @param name имя пользователя
      * @return User или null
      */
@@ -137,6 +150,17 @@ public class UserService implements UserServiceInterface {
                 .stream()
                 .filter(x->!isUserInList(x,list))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Сохраняет пользователя
+     *
+     * @param user пользователь
+     * @return сохраненный пользователь
+     */
+    @Override
+    public User saveUser(User user) {
+        return usersRepository.save(user);
     }
 
 

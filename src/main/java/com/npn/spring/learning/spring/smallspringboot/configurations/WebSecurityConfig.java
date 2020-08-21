@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/","/home","/registry","/static/**", "/error", "/authorisationMail")
+                .antMatchers("/","/home","/registry","/static/**", "/error", "/authorisationMail", "/authorisationMail/*")
                 .anonymous()
                 .antMatchers(HttpMethod.POST,"/registry")
                 .anonymous()
