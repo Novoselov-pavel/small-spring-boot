@@ -1,5 +1,5 @@
 # small-spring-boot
-<h3>v.0.0.2.c<h3>
+<h3>v.0.0.3<h3>
 <h4>Учебный проект</h4>
 
 <p>Реализация простого сайта на Spring Boot, Spring Security, Hibernate, Mockito, JUnit5.</p>
@@ -9,11 +9,36 @@
 <a href="https://start.spring.io">https://start.spring.io</a>.</p>
 <p>Файл с запросами для создания базы данных для v. 0.0.x и с комментариями к ним см:
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
+<h5>Выполнено:</h5>
+<ul>
+<li>Процесс регистрации/логина/рассылки авторизационных писем. <detail><summary>Дополинительная информация.</summary>
+
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственнен за рассылку регистрационных писем.</p>
+
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.backgroundtread ответственнен за работу фоновых процессов на сервере.
+Запускается через класс com.npn.spring.learning.spring.smallspringboot.configurations.ApplicationStartup.
+</p>
+
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.html ответственнен за выдачу пользователю навигационного (верхнего) меню, в соответствии с правами пользователя.</p>
+
+<p>В пакете com.npn.spring.learning.spring.smallspringboot.model.dbservices находятся интерфейсы и службы для работы с базой данных.
+</p>
+
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.security ответственнен за работу безопасности (пользователи, роли пользователей, авторизационное письмо и т.д.).
+</p>
+
+</detail>
+
+</li>
+</ul>
 
 <h5>В процессе разработки...</h5>
 <h5>Внесены изменения в файл конфигурации базы данных, для соответствия текущей версии</h5>
 
 <details><summary>История версий</summary>
+
+<h5>Версия 0.0.3</h5>
+<p>Рассылка писем и авторизация подключена к регистрационной форме.</p>
 
 <h5>Версия 0.0.2.c</h5>
 <p>Закончена работа с рассылкой авторизационных писем и контроллерами для приема и верификации авторизации. 

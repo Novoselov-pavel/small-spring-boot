@@ -22,10 +22,10 @@
         <!--/*@thymesVar id="user" type="com.npn.spring.learning.spring.smallspringboot.model.security.User"*/-->
         <form class="needs-validation" novalidate action="/registry" method="POST" th:object="${user}">
             <div class="form-group">
-                <label for="userName">Имя пользователя</label>
-                <input name="name" type="text" class="form-control" id="userName" aria-describedby="userNameDesc" th:value="*{name}" required pattern="[1-9A-Za-z]">
+                <label for="userName">Имя пользователя (email)</label>
+                <input name="name" type="email" class="form-control" id="userName" aria-describedby="userNameDesc" th:value="*{name}" required pattern="^.+@.+\.+.+">
                 <div class="invalid-feedback">
-                    Введите имя пользователя, только латинские буквы и цифры.
+                    Введите email.
                 </div>
             </div>
             <div class="form-group">

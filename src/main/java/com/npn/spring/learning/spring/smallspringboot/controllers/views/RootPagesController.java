@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,8 +56,12 @@ public class RootPagesController {
      * @return "views/BlankPage";
      */
     @GetMapping(value = "/login")
-    public String getLoginPage(Model model) {
+    public String getLoginPage(@RequestParam(name = "error", required = false, defaultValue = "false") boolean isError,  Model model) {
         HtmlThymeleafPage pageSettings  = insertLoginInBlankPage(model);
+        if (isError) {
+            pageSettings.setHideMessage(false);
+            pageSettings.setMessage("Login error");
+        }
         return "views/BlankPage";
     }
 

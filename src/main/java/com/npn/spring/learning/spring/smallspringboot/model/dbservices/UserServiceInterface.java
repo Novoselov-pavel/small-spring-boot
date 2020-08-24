@@ -37,7 +37,7 @@ public interface UserServiceInterface {
     User updateUser(Long id, String json) throws ParseException;
 
     /**
-     * Добавляет нового пользователя
+     * Добавляет нового пользователя (неактивированного)
      *
      * @param name имя пользователя
      * @param password пароль

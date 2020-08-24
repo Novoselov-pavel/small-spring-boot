@@ -57,6 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").successHandler(new MyAuthenticationSuccessHandler(MAX_INACTIVE_INTERVAL))
+                .failureUrl("/login?error=true")
                 .permitAll().and()
                 .logout()
                 .permitAll().deleteCookies("JSESSIONID")

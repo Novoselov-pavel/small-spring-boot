@@ -80,7 +80,7 @@ public class UserService implements UserServiceInterface {
     }
 
     /**
-     * Создает, сохраняет в базу данных и возвращает нового пользователя с ролью USER_ROLE
+     * Создает, сохраняет в базу данных и возвращает нового пользователя (неактивированного) с ролью USER_ROLE
      *
      * @param name
      * @param password
@@ -94,7 +94,7 @@ public class UserService implements UserServiceInterface {
         MyUserAuthority authority = userAuthority.getUserAuthorityByName(UsersRoles.ROLE_USER.toString());
 
         User newUser = new User(name,name,encodedPassword,
-                true,true,true,true);
+                true,true,true,false);
         newUser.addAuthority(authority);
 
         return usersRepository.save(newUser);

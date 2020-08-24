@@ -22,7 +22,7 @@ public class UserAuthorityService implements UserAuthorityInterface {
     private UserAuthoritiesRepository userAuthoritiesRepository;
 
     /**
-     * Получает роль позльзователя по названию
+     * Получает роль пользователя по названию
      * @param name имя роли пользователя
      * @return MyUserAuthority или null, если она не найдена
      */
