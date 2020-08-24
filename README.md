@@ -11,7 +11,7 @@
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
 <h5>Выполнено:</h5>
 <ul>
-<li>Процесс регистрации/логина/рассылки авторизационных писем. <detail><summary>Дополинительная информация.</summary>
+<li>Процесс регистрации/логина/рассылки авторизационных писем. <details><summary>Дополинительная информация.</summary>
 
 <p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственнен за рассылку регистрационных писем.</p>
 
@@ -27,7 +27,7 @@
 <p>Пакет com.npn.spring.learning.spring.smallspringboot.model.security ответственнен за работу безопасности (пользователи, роли пользователей, авторизационное письмо и т.д.).
 </p>
 
-</detail>
+</details>
 
 </li>
 </ul>
