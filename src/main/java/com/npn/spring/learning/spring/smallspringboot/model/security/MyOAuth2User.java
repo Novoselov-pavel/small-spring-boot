@@ -12,6 +12,9 @@ import org.springframework.util.Assert;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Пользователь для OAuth2 аутентификации
+ */
 public class MyOAuth2User implements OAuth2User, OidcUser {
     private OidcUser oidcUser;
     private final List<GrantedAuthority> authorities = new CopyOnWriteArrayList<>();

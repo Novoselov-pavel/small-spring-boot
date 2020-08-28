@@ -7,18 +7,18 @@ import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAutho
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
+/**
+ * Служба получения пользователя из переданных данных аутентификации OAuth
+ */
 @Service("myOAuth2UserService")
 public class MyOAuth2UserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
@@ -38,8 +38,7 @@ public class MyOAuth2UserService implements OAuth2UserService<OidcUserRequest, O
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         final OidcUserService delegate = new OidcUserService();
         OidcUser oidcUser = delegate.loadUser(userRequest);
-        MyOAuth2User oAuth2User = new MyOAuth2User(oidcUser,getUser(oidcUser));
-        return oAuth2User;
+        return new MyOAuth2User(oidcUser,getUser(oidcUser));
     }
 
     private User getUser(OidcUser user) {

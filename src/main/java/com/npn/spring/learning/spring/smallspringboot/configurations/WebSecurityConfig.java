@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll().deleteCookies("JSESSIONID")
                 .and()
                 .oauth2Login(config->{
-                    config.loginPage("/oauth2/authorization/google");
+                    config.loginPage("/oauth2/authorization");
                     config.defaultSuccessUrl("/");
                     config.failureUrl("/login?error=true");
                     config.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuth2UserService));

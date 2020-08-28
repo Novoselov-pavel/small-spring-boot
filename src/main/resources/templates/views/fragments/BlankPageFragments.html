@@ -76,6 +76,12 @@
             </div>
             <button type="submit" class="btn btn-primary">Войти</button>
         </form>
+        <div>
+            <div style="margin-top: 10px">Войти через:</div>
+            <div th:each="oath: ${oaths}">
+                <a th:href="${oath.value}" href="#" class="badge badge-light" th:text="${oath.key}" style="padding: 1em">Светлый</a>
+            </div>
+        </div>
     </div>
 </div>
 

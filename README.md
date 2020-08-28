@@ -1,5 +1,5 @@
 # small-spring-boot
-<h3>v.0.0.3<h3>
+<h3>v.0.0.4<h3>
 <h4>Учебный проект</h4>
 
 <p>Реализация простого сайта на Spring Boot, Spring Security, Hibernate, Mockito, JUnit5.</p>
@@ -30,12 +30,19 @@
 </details>
 
 </li>
+<li>Процесс аутентификации пользователя через OAuth. Для работы требуется указание 
+google.client-id и google.client-secret в src/main/resources/application.properties. Инструкцию по получению см. <a href="https://support.webasyst.ru/20629/auth-google/">Ссылка</a>
+</li>
+
 </ul>
 
 <h5>В процессе разработки...</h5>
 <h5>Внесены изменения в файл конфигурации базы данных, для соответствия текущей версии</h5>
 
 <details><summary>История версий</summary>
+
+<h5>Версия 0.0.4</h5>
+<p>Реализованна авторизация пользователей через OAuth (Google).</p>
 
 <h5>Версия 0.0.3</h5>
 <p>Рассылка писем и авторизация подключена к регистрационной форме.</p>

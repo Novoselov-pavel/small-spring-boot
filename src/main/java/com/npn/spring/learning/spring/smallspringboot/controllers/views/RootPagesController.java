@@ -7,22 +7,31 @@ import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.UserAlreadyExist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ResolvableType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Контроллер для страниц "/","/home","/start", "/registry", "/login"
  */
 @Controller
 public class RootPagesController {
+
+    /**
+     * Базовая часть дефолтного адреса для логина через oauth2
+     */
+    private static final String authorizationRequestBaseUri = "oauth2/authorization";
+
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     @Autowired
     @Qualifier("userService")
@@ -67,6 +76,7 @@ public class RootPagesController {
             pageSettings.setHideMessage(false);
             pageSettings.setMessage("Login error");
         }
+        model.addAttribute("oaths",getOauth2AuthenticationUrls());
         return "views/BlankPage";
     }
 
@@ -149,4 +159,26 @@ public class RootPagesController {
         HtmlThymeleafPage htmlThymeleafPage = new HtmlThymeleafPage();
         return htmlThymeleafPage;
     }
+
+    /**
+     * Получает список всекхъ служб OAuth2 которые зарегистрированы в при
+     * @return
+     */
+    private Map<String,String> getOauth2AuthenticationUrls() {
+        Map<String, String> retVal = new HashMap<>();
+        Iterable<ClientRegistration> clientRegistrations = null;
+        ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository)
+                .as(Iterable.class);
+        if (type != ResolvableType.NONE && ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
+            clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
+        }
+
+        if (clientRegistrations == null) return retVal;
+        clientRegistrations.forEach(registration ->
+                retVal.put(registration.getClientName(),
+                        authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+
+        return  retVal;
+    }
+
 }
