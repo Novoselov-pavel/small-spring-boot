@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.*;
@@ -60,24 +61,13 @@ public class HtmlNavElement {
     private int elementOrder;
 
     /**
-     * Возвращает элемент меню и его подэлементы, который доступен для пользователя.
-     * Создает копию исходного элемента.
-     *
-     * @param user пользовател
-     * @return копия HtmlNavElement или Null
-     */
-    public HtmlNavElement getElementForUserAuthority(final User user) {
-        return getElementForUserAuthority(user.getAuthorities());
-    }
-
-    /**
      * Возвращает элемент меню и его подэлементы, который доступен для указанных ролей.
      * Создает копия исходного элемента
      *
      * @param authorities роли пользователя
      * @return копию HtmlNavElement или Null
      */
-    public HtmlNavElement getElementForUserAuthority(final Set<MyUserAuthority> authorities) {
+    public HtmlNavElement getElementForUserAuthority(final Collection<? extends GrantedAuthority> authorities) {
         return cloneElementForUserAuthority(this,authorities);
     }
 
@@ -88,7 +78,7 @@ public class HtmlNavElement {
      * @return
      */
     public HtmlNavElement cloneElementForUserAuthority(final HtmlNavElement element,
-                                                       final Set<MyUserAuthority> authorities) {
+                                                       final Collection<? extends GrantedAuthority> authorities) {
         if (!isElementVisible(element,authorities)) return null;
 
         HtmlNavElement retVal = new HtmlNavElement();
@@ -118,8 +108,8 @@ public class HtmlNavElement {
      * @return
      */
     private boolean isElementVisible(final HtmlNavElement element,
-                                     final Set<MyUserAuthority> authorities){
-        return element.getAuthorities().stream().map(x->authorities.contains(x)).filter(x->x).count()>0;
+                                     final Collection<? extends GrantedAuthority> authorities){
+        return element.getAuthorities().stream().anyMatch(authorities::contains);
     }
 
     public Long getId() {

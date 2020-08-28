@@ -3,7 +3,9 @@ package com.npn.spring.learning.spring.smallspringboot.model.html;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import org.json.simple.parser.ParseException;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,11 +32,11 @@ public interface HtmlNavElementServiceInterface {
      */
     void saveElement(HtmlNavElement element);
     /**
-     * Возвращает список заголовков панели с учетом прав доступа пользователя
-     *
+     * Возвращает список заголовков панели с учетом переданных прав доступа
+     * @param authorities коллекция прав доступа
      * @return List<HtmlNavElement>
      */
-    List<HtmlNavElement> getNavHeaderElements(User user);
+    List<HtmlNavElement> getNavHeaderElements(Collection<? extends GrantedAuthority> authorities);
 
     /**
      * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя

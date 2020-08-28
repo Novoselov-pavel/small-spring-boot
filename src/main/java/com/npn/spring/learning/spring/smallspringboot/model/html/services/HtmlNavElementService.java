@@ -11,8 +11,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -157,20 +159,22 @@ public class HtmlNavElementService implements HtmlNavElementServiceInterface {
         }
     }
 
-
     /**
-     * Возвращает список заголовков панели с учетом прав доступа пользователя
+     * Возвращает список заголовков панели с учетом переданных прав доступа
      *
+     * @param authorities коллекция прав доступа
      * @return List<HtmlNavElement>
      */
-    public List<HtmlNavElement> getNavHeaderElements(User user) {
+    @Override
+    public List<HtmlNavElement> getNavHeaderElements(Collection<? extends GrantedAuthority> authorities) {
         List<HtmlNavElement> currentList = findByParentIsNullOrderByElementOrderCached();
         return currentList
                 .stream()
-                .map(x -> x.getElementForUserAuthority(user))
+                .map(x->x.getElementForUserAuthority(authorities))
                 .filter(x -> x != null)
                 .collect(Collectors.toList());
     }
+
 
     /**
      * Возвращает список заголовков панели как строку c массивом объектов в формате Json, с учетом прав доступа пользователя

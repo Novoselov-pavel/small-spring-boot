@@ -31,8 +31,7 @@ public class AdminScriptController {
     HtmlNavElementServiceInterface htmlNavElementService;
 
     @GetMapping(value = "/admin/userTables", produces = {"application/json;charset=UTF-8"})
-    public @ResponseBody String getUserTables(Authentication authentication) {
-        if (!isAdmin(authentication)) return "{}";
+    public @ResponseBody String getUserTables() {
         try {
             return userService.getAllUserAsJson();
         } catch (JsonProcessingException e) {
@@ -43,8 +42,7 @@ public class AdminScriptController {
 
 
     @GetMapping(value = "admin/getAllRoles", produces = {"application/json;charset=UTF-8"})
-    public @ResponseBody String getAllRoles(Authentication authentication) {
-        if (!isAdmin(authentication)) return "{}";
+    public @ResponseBody String getAllRoles() {
         authorityService.getAllAuthorities();
         try {
             return authorityService.getAllAuthoritiesAsJson();
@@ -55,10 +53,7 @@ public class AdminScriptController {
     }
 
     @PutMapping(value = "admin/user/{id}", consumes = {"application/json;charset=UTF-8"}, produces = {"application/json;charset=UTF-8"})
-    public @ResponseBody String updateUser(@PathVariable("id") Long id, Authentication authentication, @RequestBody String body) {
-        if (!isAdmin(authentication)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
-        }
+    public @ResponseBody String updateUser(@PathVariable("id") Long id, @RequestBody String body) {
         try {
             User user = userService.updateUser(id,body);
             if (user == null) {
@@ -73,18 +68,12 @@ public class AdminScriptController {
 
     @DeleteMapping(value = "admin/user/{id}",  produces = {"application/json;charset=UTF-8"})
     public @ResponseBody String deleteUser(@PathVariable("id") Long id, Authentication authentication) {
-        if (!isAdmin(authentication)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
-        }
         userService.deleteUser(id);
         return "{}";
     }
 
     @GetMapping(value = "admin/mainMenu", produces = {"application/json;charset=UTF-8"})
-    public @ResponseBody String getAllHtmlNavElement(Authentication authentication){
-        if (!isAdmin(authentication)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
-        }
+    public @ResponseBody String getAllHtmlNavElement(){
         try {
             String s = htmlNavElementService.getNavHeaderElementsAsJson();
             return s;
@@ -95,10 +84,7 @@ public class AdminScriptController {
     }
     
     @PutMapping(value = "admin/mainMenu/saveNavMenuElement", produces = {"application/json;charset=UTF-8"}, consumes = {"application/json;charset=UTF-8"})
-    public @ResponseBody String saveHtmlNavElement(Authentication authentication, @RequestBody String body) {
-        if (!isAdmin(authentication)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
-        }
+    public @ResponseBody String saveHtmlNavElement(@RequestBody String body) {
         try {
             htmlNavElementService.saveNavHeaderElementFromJson(body);
             return "{}";
@@ -109,32 +95,10 @@ public class AdminScriptController {
     }
 
     @DeleteMapping (value = "/admin/mainMenu/deleteNavMenuElement/{id}", produces = {"application/json;charset=UTF-8"})
-    public @ResponseBody String deleteHtmlNavElement(@PathVariable("id") Long id, Authentication authentication) {
-        if (!isAdmin(authentication)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Access forbidden");
-        }
+    public @ResponseBody String deleteHtmlNavElement(@PathVariable("id") Long id) {
         htmlNavElementService.deleteNavHeaderElement(id);
         return "{}";
     }
 
-    /**
-     * Эта функция в общем излишняя, так как у нас есть @Secured("ADMIN_ROLE").
-     * Но, так как эта работа с критически важной информацией, мы перестрахуемся.
-     *
-     * @param authentication Authentication
-     * @return true если пользователь в группе администраторы, иначе false.
-     */
-    private boolean isAdmin(Authentication authentication) {
-        User user;
-        if (authentication.getPrincipal() instanceof User) {
-            user = (User) authentication.getPrincipal();
-        } else {
-            return false;
-        }
-        if (!user.hasRole(UsersRoles.ROLE_ADMIN)) {
-            return false;
-        }
-        return true;
-    }
-    
+
 }

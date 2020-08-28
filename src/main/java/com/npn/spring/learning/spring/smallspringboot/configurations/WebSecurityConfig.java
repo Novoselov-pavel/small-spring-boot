@@ -1,7 +1,12 @@
 package com.npn.spring.learning.spring.smallspringboot.configurations;
 
+import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
+import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyAuthenticationSuccessHandler;
 import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyDatabaseUserDetailsService;
+import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -12,12 +17,17 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import java.security.Principal;
 
 /**
  * Конфигурационный класс для разграничения доступа
@@ -34,6 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${my.session.timeout}")
     private int MAX_INACTIVE_INTERVAL;
+
+    @Autowired
+    protected OAuth2UserService oAuth2UserService;
 
     /**
      * Конфигурация Spring Security
@@ -61,7 +74,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll().and()
                 .logout()
                 .permitAll().deleteCookies("JSESSIONID")
-                .and().httpBasic().and()
+                .and()
+                .oauth2Login(config->{
+                    config.loginPage("/oauth2/authorization/google");
+                    config.defaultSuccessUrl("/");
+                    config.failureUrl("/login?error=true");
+                    config.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuth2UserService));
+                })
+                .httpBasic()
+                .and()
                 .sessionManagement() // реализация возможности захода только с одного адреса,для корректной работы нужно в пользователе
                                      // правильно реальзовать equals и hashCode
                 .maximumSessions(1)
@@ -111,6 +132,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static ServletListenerRegistrationBean httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
+
 
 
 

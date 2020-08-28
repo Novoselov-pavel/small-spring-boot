@@ -3,15 +3,20 @@ package com.npn.spring.learning.spring.smallspringboot.controllers.views;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlThymeleafPage;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
+import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import com.npn.spring.learning.spring.smallspringboot.model.security.exceptions.UserAlreadyExist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Контроллер для страниц "/","/home","/start", "/registry", "/login"
@@ -31,8 +36,8 @@ public class RootPagesController {
     @GetMapping(value = {"/","/home"})
     public String getHomePage(Model model) {
         insertHomeInBlankPage(model);
-        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (object instanceof User) {
+        Collection<GrantedAuthority> collection = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        if (collection.stream().anyMatch(x->UsersRoles.containRole(x.getAuthority()))) {
             return "redirect:/user/";
         }
         return "views/BlankPage";
