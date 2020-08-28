@@ -11,8 +11,7 @@
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
 <h5>Выполнено:</h5>
 <ul>
-<li>Процесс регистрации/логина/рассылки авторизационных писем.</li>
-<details><summary>Дополнительная информация.</summary>
+<li>Процесс регистрации/логина/рассылки авторизационных писем. <details><summary>Дополинительная информация.</summary>
 
 <p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственнен за рассылку регистрационных писем.</p>
 
@@ -29,6 +28,8 @@
 </p>
 
 </details>
+
+</li>
 </ul>
 
 <h5>В процессе разработки...</h5>
