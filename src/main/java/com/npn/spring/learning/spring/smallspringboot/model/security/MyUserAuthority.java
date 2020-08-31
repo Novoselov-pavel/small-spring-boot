@@ -1,10 +1,14 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.ReportTableCell;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.interfaces.ReportTableRowRepresentation;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -15,6 +19,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Entity
 @Table(name = "users_roles")
 public class MyUserAuthority implements GrantedAuthority {
+    @JsonIgnore
+    @Transient
+    public static final String REPORT_COLUMN_REPRESENTATION = "Roles";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

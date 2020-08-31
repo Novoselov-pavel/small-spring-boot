@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserAuthorityInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.ReportTableCell;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.SimpleReportTable;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.interfaces.TableReportData;
 import com.npn.spring.learning.spring.smallspringboot.model.repositories.UsersRepository;
 import com.npn.spring.learning.spring.smallspringboot.model.security.AuthorisationMailData;
 import com.npn.spring.learning.spring.smallspringboot.model.security.MyUserAuthority;
@@ -18,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -28,7 +29,7 @@ import java.util.stream.StreamSupport;
  * Служба по взаимодействию с пользователем
  */
 @Service("userService")
-public class UserService implements UserServiceInterface {
+public class UserService implements UserServiceInterface, TableReportData {
 
     private UserAuthorityInterface userAuthority;
 
@@ -204,5 +205,24 @@ public class UserService implements UserServiceInterface {
     private boolean isUserInList(final User user, final List<AuthorisationMailData> list) {
         return list.stream()
                 .anyMatch(x->x.getUserId().equals(user.getId()));
+    }
+
+    /**
+     * Возвращает представление объекта как простой таблицы для отчета
+     *
+     * @return {@link SimpleReportTable}
+     */
+    @Override
+    public SimpleReportTable getReportTable() {
+        SimpleReportTable table = new SimpleReportTable();
+        List<User> userList = findAll();
+        if (userList.size()>0) {
+            table.addRows(userList.stream().map(User::getReportTableEntity).collect(Collectors.toList()));
+        } else {
+            List<Map<String, ReportTableCell>> maps = new ArrayList<>();
+            maps.add(User.getDefaultReportTableEntity());
+            table.addRows(maps);
+        }
+        return null;
     }
 }

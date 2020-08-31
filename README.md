@@ -11,20 +11,20 @@
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
 <h5>Выполнено:</h5>
 <ul>
-<li>Процесс регистрации/логина/рассылки авторизационных писем. <details><summary>Дополинительная информация.</summary>
+<li>Процесс регистрации/логина/рассылки авторизационных писем. <details><summary>Дополнительная информация.</summary>
 
-<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственнен за рассылку регистрационных писем.</p>
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственен за рассылку регистрационных писем.</p>
 
-<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.backgroundtread ответственнен за работу фоновых процессов на сервере.
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.backgroundtread ответственен за работу фоновых процессов на сервере.
 Запускается через класс com.npn.spring.learning.spring.smallspringboot.configurations.ApplicationStartup.
 </p>
 
-<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.html ответственнен за выдачу пользователю навигационного (верхнего) меню, в соответствии с правами пользователя.</p>
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.html ответственен за выдачу пользователю навигационного (верхнего) меню, в соответствии с правами пользователя.</p>
 
 <p>В пакете com.npn.spring.learning.spring.smallspringboot.model.dbservices находятся интерфейсы и службы для работы с базой данных.
 </p>
 
-<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.security ответственнен за работу безопасности (пользователи, роли пользователей, авторизационное письмо и т.д.).
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.security ответственен за работу безопасности (пользователи, роли пользователей, авторизационное письмо и т.д.).
 </p>
 
 </details>

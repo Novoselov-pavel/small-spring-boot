@@ -1,12 +1,12 @@
 package com.npn.spring.learning.spring.smallspringboot.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.ReportTableCell;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.interfaces.ReportTableRowRepresentation;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @JsonIgnoreProperties(value = {"password"}, ignoreUnknown = true)
 @Entity
 @Table(name="usrs")
-public class User implements UserDetails {
+public class User implements UserDetails, ReportTableRowRepresentation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -209,5 +209,49 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    /**
+     * Возвращает класс в виде его представления для таблицы отчета
+     *
+     * @return Map<String, ReportTableCell> где, ключ - имя заголовка столбца таблицы, значение - объект {@link ReportTableCell}
+     * определяющий представление поля в отчете
+     */
+    @Override
+    public Map<String, ReportTableCell> getReportTableEntity() {
+        Map<String,ReportTableCell> map = getDefaultReportTableEntity();
+        map.put("Id", new ReportTableCell(ReportTableCell.ReportTableFieldType.NUMERIC,id.toString()));
+        map.put("User name", new ReportTableCell(ReportTableCell.ReportTableFieldType.STRING,name));
+        map.put("User display name", new ReportTableCell(ReportTableCell.ReportTableFieldType.STRING,displayName));
+        map.put("accountNonExpired", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,String.valueOf(accountNonExpired)));
+        map.put("accountNonLocked", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,String.valueOf(accountNonLocked)));
+        map.put("credentialsNonExpired", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,String.valueOf(credentialsNonExpired)));
+        map.put("enabled", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,String.valueOf(enabled)));
+        map.put(MyUserAuthority.REPORT_COLUMN_REPRESENTATION,
+                new ReportTableCell(
+                        ReportTableCell.ReportTableFieldType.STRING,
+                        authorities.stream().map(MyUserAuthority::getRole).reduce("",(a, b) -> a+ " " + b)));
+        return map;
+    }
+
+    /**
+     * Возвращает класс в виде его представления для таблицы отчета с пустыми значениями
+     *
+     * @return Map<String, ReportTableCell> где, ключ - имя заголовка столбца таблицы, значение - объект {@link ReportTableCell} (пустой)
+     *  определяющий представление поля в отчете
+     */
+    public static Map<String, ReportTableCell> getDefaultReportTableEntity() {
+        Map<String,ReportTableCell> map = new LinkedHashMap<>();
+        map.put("Id", new ReportTableCell(ReportTableCell.ReportTableFieldType.NUMERIC,null));
+        map.put("User name", new ReportTableCell(ReportTableCell.ReportTableFieldType.STRING,null));
+        map.put("User display name", new ReportTableCell(ReportTableCell.ReportTableFieldType.STRING,null));
+        map.put("accountNonExpired", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,null));
+        map.put("accountNonLocked", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,null));
+        map.put("credentialsNonExpired", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,null));
+        map.put("enabled", new ReportTableCell(ReportTableCell.ReportTableFieldType.BOOLEAN,null));
+        map.put(MyUserAuthority.REPORT_COLUMN_REPRESENTATION,
+                new ReportTableCell(
+                        ReportTableCell.ReportTableFieldType.STRING,null));
+        return map;
     }
 }
