@@ -26,6 +26,7 @@
 		<opentest4j.version>1.2.0</opentest4j.version>
 		<json-simple.json.version>1.1.1</json-simple.json.version>
 		<apache.commons.lang.version>3.11</apache.commons.lang.version>
+		<appache.poi.version>4.1.2</appache.poi.version>
 	</properties>
 
 	<dependencies>
@@ -149,6 +150,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apache.commons.lang.version}</version>
+		</dependency>
+		<!-- Зависимость для работы с файлами Microsoft Office (stream версия)-->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${appache.poi.version}</version>
 		</dependency>
 	</dependencies>
 

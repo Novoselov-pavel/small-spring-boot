@@ -217,11 +217,11 @@ public class UserService implements UserServiceInterface, TableReportData {
         SimpleReportTable table = new SimpleReportTable();
         List<User> userList = findAll();
         if (userList.size()>0) {
-            table.addRows(userList.stream().map(User::getReportTableEntity).collect(Collectors.toList()));
+            table.addTableData(userList.stream().map(User::getReportTableEntity).collect(Collectors.toList()));
         } else {
             List<Map<String, ReportTableCell>> maps = new ArrayList<>();
             maps.add(User.getDefaultReportTableEntity());
-            table.addRows(maps);
+            table.addTableData(maps);
         }
         return null;
     }
