@@ -13,6 +13,19 @@ public class ReportTableCell {
 
     public ReportTableCell(final ReportTableFieldType cellType,final String value) {
         this.cellType = cellType;
+        if (cellType==ReportTableFieldType.NUMERIC && value!=null) {
+            try{
+                Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Cannot convert value "+value+" to double");
+            }
+        } else if (cellType==ReportTableFieldType.BOOLEAN && value!=null) {
+            try {
+                Boolean.valueOf(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Cannot convert value "+value+" to boolean");
+            }
+        }
         this.value = value==null? "": value;
     }
 

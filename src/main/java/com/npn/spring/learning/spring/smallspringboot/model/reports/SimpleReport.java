@@ -1,13 +1,17 @@
 package com.npn.spring.learning.spring.smallspringboot.model.reports;
 
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Класс представляющий простой отчет
@@ -33,37 +37,73 @@ public class SimpleReport {
         this.reportName = reportName;
     }
 
-    public void getReportAsXlsxStream (OutputStream stream) {
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet(reportName);
-        Font headerFont = createTableHeaderFont(workbook.createFont());
-        Font recordFont = createTableRecordFont(workbook.createFont());
-        CellStyle headerStyle = createTableHeaderStyle(workbook.createCellStyle(),headerFont);
-        CellStyle recordStyle = createTableRecordStyle(workbook.createCellStyle(),recordFont);
-        int bodyRowStartIndex = writeTableHeaderAndReturnNextRowIndex(sheet,headerStyle,0,0);
-        ///TODO
+    /**
+     * Записывает xlsx отчет в переданный OutputStream
+     *
+     * @param stream OutputStream куда записывается отчет
+     * @throws IOException при ошибках записи
+     */
+    public void getReportAsXlsxStream (OutputStream stream) throws IOException {
+        try(SXSSFWorkbook workbook = new SXSSFWorkbook();) {
+            SXSSFSheet sheet = workbook.createSheet(reportName);
+            Font headerFont = createTableHeaderFont(workbook.createFont());
+            Font recordFont = createTableRecordFont(workbook.createFont());
+            CellStyle headerStyle = createTableHeaderStyle(workbook.createCellStyle(),headerFont);
+            CellStyle recordStyle = createTableRecordStyle(workbook.createCellStyle(),recordFont);
+            int bodyRowStartIndex = writeTableHeaderAndReturnNextRowIndex(sheet,headerStyle,0,0);
+            writeTableBody(sheet,recordStyle,bodyRowStartIndex,0);
+            workbook.write(stream);
+        }
     }
 
 
-    private int writeTableHeaderAndReturnNextRowIndex(SXSSFSheet sheet, CellStyle style, int startRowNum, int startColumnRow) {
+
+    private int writeTableBody(final SXSSFSheet sheet,final CellStyle style,final int startRowNum,final int startColumnRow) {
+        int rowIndex = startRowNum;
+        for (List<ReportTableCell> tableRowCells : reportTable.getTableRows()) {
+            SXSSFRow row = sheet.createRow(rowIndex++);
+            int columnIndex = startColumnRow;
+            for (ReportTableCell cell : tableRowCells) {
+                SXSSFCell fileCell = row.createCell(columnIndex++);
+                fileCell.setCellStyle(style);
+                if (!cell.isBlank()){
+                    switch (cell.getCellType()) {
+                        case NUMERIC: fileCell.setCellValue(Double.parseDouble(cell.getValue()));
+                            break;
+                        case BOOLEAN: fileCell.setCellValue(Boolean.parseBoolean(cell.getValue()));
+                            break;
+                        default: fileCell.setCellValue(cell.getValue());
+                            break;
+                    }
+                }
+
+            }
+        }
+        return rowIndex;
+    }
+
+
+
+    private int writeTableHeaderAndReturnNextRowIndex(final SXSSFSheet sheet,final CellStyle style,final int startRowNum,final int startColumnRow) {
         SXSSFRow row = sheet.createRow(startRowNum);
         if (reportTable.getTableColumnNames().size()<=0) return startRowNum;
-        int column = startColumnRow;
+        int columnIndex = startColumnRow;
         for (String tableColumnName : reportTable.getTableColumnNames()) {
-            SXSSFCell cell = row.createCell(column++);
+            SXSSFCell cell = row.createCell(columnIndex++);
             cell.setCellStyle(style);
             cell.setCellType(CellType.STRING);
             cell.setCellValue(tableColumnName);
         }
-        return ++startRowNum;
+        return startRowNum+1;
     }
 
     private CellStyle createTableRecordStyle(CellStyle style, Font font) {
         style.setFont(font);
-        style.setBorderTop(BorderStyle.MEDIUM);
-        style.setBorderBottom(BorderStyle.MEDIUM);
-        style.setBorderLeft(BorderStyle.MEDIUM);
-        style.setBorderRight(BorderStyle.MEDIUM);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setShrinkToFit(true);
         return style;
     }
 
@@ -71,23 +111,24 @@ public class SimpleReport {
         style.setFont(font);
         style.setBorderTop(BorderStyle.THICK);
         style.setBorderBottom(BorderStyle.THICK);
-        style.setBorderLeft(BorderStyle.MEDIUM);
-        style.setBorderRight(BorderStyle.MEDIUM);
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(FillPatternType.LESS_DOTS);
+        style.setShrinkToFit(true);
         return style;
     }
 
 
     private Font createTableHeaderFont(Font font) {
         font.setBold(true);
-        font.setFontHeight((short) 14);
+        font.setFontHeightInPoints((short) 14);
         return font;
     }
 
     private Font createTableRecordFont(Font font) {
         font.setBold(false);
-        font.setFontHeight((short) 12);
+        font.setFontHeightInPoints((short) 12);
         return font;
     }
 
