@@ -3,20 +3,24 @@ package com.npn.spring.learning.spring.smallspringboot.model.reports;
 
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
  * Класс представляющий простой отчет
  */
 public class SimpleReport {
+    private final String FOOTER_TEXT = "{PAGE \\* MERGEFORMAT} \\ {NUMPAGES \\* MERGEFORMAT}";
     private String reportName = "SimpleReport";
     private final SimpleReportTable reportTable;
 
@@ -56,7 +60,108 @@ public class SimpleReport {
         }
     }
 
+    /**
+     * Записывает docx отчет в переданный OutputStream
+     *
+     * @param stream OutputStream куда записывается отчет
+     * @throws IOException при ошибках записи
+     */
+    public void getReportASDocxStream(OutputStream stream) throws IOException {
+        try(XWPFDocument document = new XWPFDocument()) {
+            setDocxA4PageSizeAndLandscape(document);
+            createDocxHeader(document);
+            createDocxFooter(document);
+            writeTableInDocx(document);
 
+            document.write(stream);
+        }
+    }
+
+
+    /**
+     * Устанавливает для нового файла альбомную ориентацию и A4 размер страницы
+     * @param doc XWPFDocument
+     */
+    private void setDocxA4PageSizeAndLandscape(XWPFDocument doc) {
+        CTDocument1 document = doc.getDocument();
+        CTBody body = document.getBody();
+
+        if (!body.isSetSectPr()) {
+            body.addNewSectPr();
+        }
+        CTSectPr section = body.getSectPr();
+
+        if(!section.isSetPgSz()) {
+            section.addNewPgSz();
+        }
+        CTPageSz pageSize = section.getPgSz();
+        pageSize.setW(BigInteger.valueOf(16840));
+        pageSize.setH(BigInteger.valueOf(11900));
+        pageSize.setOrient(STPageOrientation.LANDSCAPE);
+    }
+
+    private void createDocxHeader(XWPFDocument doc) {
+        XWPFHeader header = doc.createHeader(HeaderFooterType.DEFAULT);
+        XWPFParagraph paragraph = header.createParagraph();
+        paragraph.setAlignment(ParagraphAlignment.LEFT);
+        XWPFRun run = paragraph.createRun();
+        run.setFontFamily("Times New Roman");
+        run.setFontSize(12);
+        run.setBold(true);
+        run.setText(reportName);
+    }
+
+    private void createDocxFooter(XWPFDocument doc) {
+        XWPFFooter footer = doc.createFooter(HeaderFooterType.DEFAULT);
+        XWPFParagraph paragraph = footer.createParagraph();
+        paragraph.setAlignment(ParagraphAlignment.RIGHT);
+        XWPFRun run = paragraph.createRun();
+        run.setFontFamily("Times New Roman");
+        run.setFontSize(12);
+        paragraph.getCTP().addNewFldSimple().setInstr("PAGE \\* MERGEFORMAT");
+        run = paragraph.createRun();
+        run.setFontFamily("Times New Roman");
+        run.setFontSize(12);
+        run.setText(" of ");
+        paragraph.getCTP().addNewFldSimple().setInstr("NUMPAGES \\* MERGEFORMAT");
+    }
+
+
+    private void writeTableInDocx(XWPFDocument doc) {
+        XWPFTable table = doc.createTable(1,reportTable.columnNumber());
+        XWPFTableRow row = table.getRow(0);
+        row.setRepeatHeader(true);
+        int columnIndex = 0;
+        for (XWPFTableCell cell : row.getTableCells()) {
+            fillTableHeaderCell(cell,columnIndex++);
+        }
+        reportTable.getTableRows().forEach(x->fillRow(x,table.createRow()));
+
+    }
+
+    private void fillRow(List<ReportTableCell> list, XWPFTableRow row) {
+        int columnIndex = 0;
+        for (XWPFTableCell cell : row.getTableCells()) {
+            fillTableBodyCell(cell,columnIndex++, list);
+        }
+    }
+
+    private void fillTableBodyCell(XWPFTableCell cell, int columnIndex, List<ReportTableCell> list){
+        XWPFRun run = cell.getParagraphArray(0).createRun();
+        run.setFontSize(10);
+        run.setBold(false);
+        run.setFontFamily("Times New Roman");
+        run.setText(list.get(columnIndex).getValue());
+    }
+
+
+    private void fillTableHeaderCell(XWPFTableCell cell, int columnIndex){
+        XWPFRun run = cell.getParagraphArray(0).createRun();
+        run.setFontSize(14);
+        run.setBold(true);
+        run.setFontFamily("Times New Roman");
+        run.setText(reportTable.getTableColumnNames().get(columnIndex));
+    }
 
     private int writeTableBody(final SXSSFSheet sheet,final CellStyle style,final int startRowNum,final int startColumnRow) {
         int rowIndex = startRowNum;

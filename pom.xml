@@ -27,6 +27,7 @@
 		<json-simple.json.version>1.1.1</json-simple.json.version>
 		<apache.commons.lang.version>3.11</apache.commons.lang.version>
 		<appache.poi.version>4.1.2</appache.poi.version>
+		<appache.poi.bundles.version>4.1.2_1</appache.poi.bundles.version>
 	</properties>
 
 	<dependencies>
@@ -157,6 +158,13 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>${appache.poi.version}</version>
 		</dependency>
+		<!-- Зависимость для разметки страниц в docx -->
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.poi</artifactId>
+			<version>${appache.poi.bundles.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

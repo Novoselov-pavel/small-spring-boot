@@ -1,4 +1,4 @@
-package com.npn.spring.learning.spring.smallspringboot.model.security.servises;
+package com.npn.spring.learning.spring.smallspringboot.model.security.services;
 
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserAuthorityInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;

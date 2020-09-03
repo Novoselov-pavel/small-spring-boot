@@ -1,12 +1,8 @@
 package com.npn.spring.learning.spring.smallspringboot.configurations;
 
-import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
-import com.npn.spring.learning.spring.smallspringboot.model.security.User;
-import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyAuthenticationSuccessHandler;
-import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyDatabaseUserDetailsService;
-import com.npn.spring.learning.spring.smallspringboot.model.security.servises.MyOAuth2UserService;
+import com.npn.spring.learning.spring.smallspringboot.model.security.services.MyAuthenticationSuccessHandler;
+import com.npn.spring.learning.spring.smallspringboot.model.security.services.MyDatabaseUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -17,8 +13,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,8 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-
-import java.security.Principal;
 
 /**
  * Конфигурационный класс для разграничения доступа

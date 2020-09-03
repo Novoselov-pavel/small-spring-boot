@@ -59,4 +59,24 @@ class SimpleReportTest {
         }
 
     }
+
+    /**
+     * Полноценное автоматическое тестирование данного метода для некоммерческой разработки не имеет смысла,
+     * из-за необходимости включения большого количества кода.
+     */
+    @Test
+    void getReportASDocxStream() {
+        SimpleReport simpleReport = getTestReport();
+        try{
+            Path outputFile = Files.createTempFile(null,".docx");
+            try(OutputStream stream = Files.newOutputStream(outputFile)) {
+                simpleReport.getReportASDocxStream(stream);
+                stream.flush();
+            }
+            Files.deleteIfExists(outputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 }

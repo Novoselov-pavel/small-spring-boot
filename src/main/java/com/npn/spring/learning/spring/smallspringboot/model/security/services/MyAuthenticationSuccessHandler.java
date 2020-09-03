@@ -1,4 +1,4 @@
-package com.npn.spring.learning.spring.smallspringboot.model.security.servises;
+package com.npn.spring.learning.spring.smallspringboot.model.security.services;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

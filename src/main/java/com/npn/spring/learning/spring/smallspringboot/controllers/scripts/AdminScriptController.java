@@ -4,16 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserAuthorityInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.dbservices.UserServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.html.HtmlNavElementServiceInterface;
+import com.npn.spring.learning.spring.smallspringboot.model.reports.interfaces.ReportServiceInterface;
 import com.npn.spring.learning.spring.smallspringboot.model.security.User;
 import com.npn.spring.learning.spring.smallspringboot.model.security.UsersRoles;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Контроллер для работы с информацией администратора
@@ -29,6 +36,9 @@ public class AdminScriptController {
 
     @Autowired
     HtmlNavElementServiceInterface htmlNavElementService;
+
+    @Autowired
+    ReportServiceInterface reportService;
 
     @GetMapping(value = "/admin/userTables", produces = {"application/json;charset=UTF-8"})
     public @ResponseBody String getUserTables() {
@@ -100,5 +110,15 @@ public class AdminScriptController {
         return "{}";
     }
 
+    @GetMapping(value = "/admin/report/{reportDocType}/{reportName}", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public ResponseEntity<Resource> getReport(@PathVariable("reportDocType") String reportDocType,
+                                              @PathVariable("reportName") String reportName) {
+        Resource file = reportService.getReport(reportDocType,reportName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+                        URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8) + "\"")
+                .body(file);
+    }
 
 }
