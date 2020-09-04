@@ -24,7 +24,10 @@ public class SimpleReport {
     private String reportName = "SimpleReport";
     private final SimpleReportTable reportTable;
 
-
+    /**
+     * Создает простой отчет, который состоит из одной таблицы
+     * @param reportTable таблица отчета
+     */
     public SimpleReport(SimpleReportTable reportTable) {
         this.reportTable = reportTable;
     }
@@ -56,6 +59,9 @@ public class SimpleReport {
             CellStyle recordStyle = createTableRecordStyle(workbook.createCellStyle(),recordFont);
             int bodyRowStartIndex = writeTableHeaderAndReturnNextRowIndex(sheet,headerStyle,0,0);
             writeTableBody(sheet,recordStyle,bodyRowStartIndex,0);
+            for (int i = 0; i < reportTable.getTableColumnNames().size() ; i++) {
+                sheet.autoSizeColumn(i);
+            }
             workbook.write(stream);
         }
     }
@@ -194,6 +200,7 @@ public class SimpleReport {
         if (reportTable.getTableColumnNames().size()<=0) return startRowNum;
         int columnIndex = startColumnRow;
         for (String tableColumnName : reportTable.getTableColumnNames()) {
+            sheet.trackColumnForAutoSizing(columnIndex);
             SXSSFCell cell = row.createCell(columnIndex++);
             cell.setCellStyle(style);
             cell.setCellType(CellType.STRING);
@@ -208,7 +215,6 @@ public class SimpleReport {
         style.setBorderBottom(BorderStyle.THIN);
         style.setBorderLeft(BorderStyle.THIN);
         style.setBorderRight(BorderStyle.THIN);
-        style.setShrinkToFit(true);
         return style;
     }
 
@@ -220,7 +226,6 @@ public class SimpleReport {
         style.setBorderRight(BorderStyle.THIN);
         style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.LESS_DOTS);
-        style.setShrinkToFit(true);
         return style;
     }
 

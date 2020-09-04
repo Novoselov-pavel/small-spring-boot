@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -114,11 +115,20 @@ public class AdminScriptController {
     @ResponseBody
     public ResponseEntity<Resource> getReport(@PathVariable("reportDocType") String reportDocType,
                                               @PathVariable("reportName") String reportName) {
-        Resource file = reportService.getReport(reportDocType,reportName);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-                        URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8) + "\"")
-                .body(file);
+        try {
+            Resource file = reportService.getReport(reportDocType,reportName);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+                            URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8) + "\"")
+                    .body(file);
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace(); // TODO когда будут идеи по логгированию
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(),e);
+        } catch (IOException e) {
+            e.printStackTrace(); // TODO когда будут идеи по логгированию
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage(),e);
+        }
     }
 
 }

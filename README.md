@@ -1,5 +1,5 @@
 # small-spring-boot
-<h3>v.0.0.4<h3>
+<h3>v.0.0.5<h3>
 <h4>Учебный проект</h4>
 
 <p>Реализация простого сайта на Spring Boot, Spring Security, Hibernate, Mockito, JUnit5.</p>
@@ -11,7 +11,16 @@
 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/DBSQL.txt">DBSQL.txt</a></p>
 <h5>Выполнено:</h5>
 <ul>
-<li>Процесс регистрации/логина/рассылки авторизационных писем. <details><summary>Дополнительная информация.</summary>
+<li>Процесс регистрации/логина/рассылки авторизационных писем.</li>
+<li>Добавлена возможность настройки элементов меню на странице администратора. Меню выводится в виде 
+    дерева с помощью jstree</li>
+<li>Процесс аутентификации пользователя через OAuth. Для работы требуется указание 
+google.client-id и google.client-secret в src/main/resources/application.properties. Инструкцию по получению см. <a href="https://support.webasyst.ru/20629/auth-google/">Ссылка</a>
+</li>
+<li>Отчеты в XLSX и DOCX через Apache Poi.</li>
+</ul>
+
+<details><summary>Дополнительная информация.</summary>
 
 <p>Пакет com.npn.spring.learning.spring.smallspringboot.model.mail ответственен за рассылку регистрационных писем.</p>
 
@@ -27,19 +36,19 @@
 <p>Пакет com.npn.spring.learning.spring.smallspringboot.model.security ответственен за работу безопасности (пользователи, роли пользователей, авторизационное письмо и т.д.).
 </p>
 
+<p>Пакет com.npn.spring.learning.spring.smallspringboot.model.reports ответственен за работу с отчетами.
+</p>
+
 </details>
-
-</li>
-<li>Процесс аутентификации пользователя через OAuth. Для работы требуется указание 
-google.client-id и google.client-secret в src/main/resources/application.properties. Инструкцию по получению см. <a href="https://support.webasyst.ru/20629/auth-google/">Ссылка</a>
-</li>
-
-</ul>
 
 <h5>В процессе разработки...</h5>
 <h5>Внесены изменения в файл конфигурации базы данных, для соответствия текущей версии</h5>
 
 <details><summary>История версий</summary>
+
+<h5>Версия 0.0.5</h5>
+<p>Реализованы отчеты в XLSX и DOCX через Apache Poi.</p>
+
 
 <h5>Версия 0.0.4</h5>
 <p>Реализованна авторизация пользователей через OAuth (Google).</p>

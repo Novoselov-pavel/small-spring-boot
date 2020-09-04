@@ -9,30 +9,50 @@ import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
+
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.stream.Collectors;
 
+/**
+ * Служба работы с отчетами
+ */
 @Service
 public class ReportService implements ReportServiceInterface {
 
     @Autowired
     UserServiceInterface userService;
 
-
+    /**
+     * Возвращает отчет как {@link Resource}
+     *
+     * @param reportDocType тиn файла вывода отчета
+     * @param reportName имя отчета, определяет содержание отчета
+     * @return отчет как {@link Resource}
+     * @throws IOException при ошибке файловой системы
+     * @throws IllegalArgumentException при неверных параметрах reportDocType, reportName
+     */
     @Override
     public Resource getReport(final String reportDocType, final String reportName) throws IOException {
         FileUrlResource resource = new FileUrlResource(getReportFile(reportDocType, reportName));
         return resource;
     }
 
+    /**
+     * Возвращает отчет как {@link URL}
+     *
+     * @param reportDocType тиn файла вывода отчета
+     * @param reportName имя отчета, определяет содержание отчета
+     * @return отчет как {@link Resource}
+     * @throws IOException при ошибке файловой системы
+     * @throws IllegalArgumentException при неверных параметрах reportDocType, reportName
+     */
     @Override
     public URL getReportFile(String reportDocType, String reportName) throws IOException {
         AvailableReports report = AvailableReports.getReport(reportName);
@@ -41,21 +61,36 @@ public class ReportService implements ReportServiceInterface {
         if (report==AvailableReports.UNDEFINED || format == AvailableReportsFormats.UNDEFINED) {
             throw new IllegalArgumentException("Type of report or format of report document  wasn't recognise");
         }
-        Path path = Files.createTempFile(getTempFilePrefix(),format.getReportFormat());
+        Path path = Files.createTempFile(getTempFilePrefix(),"."+format.getReportFormat());
 
         switch (report) {
             case USERS_SIMPLE_REPORT:
-                SimpleReport outputReport = new SimpleReport(new SimpleReportTable().addTableData(userService
+                return getSimpleReportURL(new SimpleReportTable().addTableData(userService
                         .findAll()
                         .stream()
                         .map(x->x.getReportTableEntity())
-                        .collect(Collectors.toList())));
-
-                //TODO остановился тут
-
+                        .collect(Collectors.toList()))
+                        ,path,format);
         }
-
         return null;
+    }
+
+    private URL getSimpleReportURL(SimpleReportTable table, Path filePath, AvailableReportsFormats formats) throws IOException {
+        try (OutputStream stream = Files.newOutputStream(filePath)) {
+            filePath.toFile().deleteOnExit(); /// вообще для коммерческого использования данный вариант не годится
+            /// надо создавать систему работы с временными файлами для их очистки (например через PhantomReference), либо работать с Resource через
+            ///in-memory имплементации
+            SimpleReport report = new SimpleReport(table);
+            switch (formats) {
+                case DOCX:
+                    report.getReportASDocxStream(stream);
+                    break;
+                case XLSX:
+                    report.getReportAsXlsxStream(stream);
+            }
+            stream.flush();
+            return filePath.toUri().toURL();
+        }
     }
 
     private String getTempFilePrefix() {
@@ -66,10 +101,14 @@ public class ReportService implements ReportServiceInterface {
                 .append("-")
                 .append(calendar.get(Calendar.MONTH))
                 .append("-")
-                .append(calendar.get(Calendar.DAY_OF_MONTH));
+                .append(calendar.get(Calendar.DAY_OF_MONTH))
+                .append("-");
         return builder.toString();
     }
 
+    /**
+     * Определяет поддерживаемые форматы выходных файлов отчетов
+     */
     public enum AvailableReportsFormats{
         XLSX ("xlsx"), DOCX("docx"), UNDEFINED("undefined");
 
@@ -98,7 +137,9 @@ public class ReportService implements ReportServiceInterface {
         }
     }
 
-
+    /**
+     * Определяет поддерживаемые форматы отчетов
+     */
     public enum AvailableReports {
         USERS_SIMPLE_REPORT ("users"), UNDEFINED("undefined");
 
