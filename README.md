@@ -1,5 +1,5 @@
 # small-spring-boot
-<h3>v.0.0.5<h3>
+<h3>v.0.0.5.fix.1<h3>
 <h4>Учебный проект</h4>
 
 <p>Реализация простого сайта на Spring Boot, Spring Security, Hibernate, Mockito, JUnit5.</p>
@@ -18,6 +18,7 @@
 google.client-id и google.client-secret в src/main/resources/application.properties. Инструкцию по получению см. <a href="https://support.webasyst.ru/20629/auth-google/">Ссылка</a>
 </li>
 <li>Отчеты в XLSX и DOCX через Apache Poi.</li>
+<li>Видео по версии 0.0.5.fix.1 <a href="https://github.com/Novoselov-pavel/small-spring-boot/blob/master/Spring-boot.mp4">Spring-boot.mp4</a>.</li>
 </ul>
 
 <details><summary>Дополнительная информация.</summary>
@@ -45,6 +46,9 @@ google.client-id и google.client-secret в src/main/resources/application.prope
 <h5>Внесены изменения в файл конфигурации базы данных, для соответствия текущей версии</h5>
 
 <details><summary>История версий</summary>
+
+<h5>Версия 0.0.5.fix.1</h5>
+<p>Исправление HtmlNavElement. Добавлено видео по реализации версии 0.0.5.</p>
 
 <h5>Версия 0.0.5</h5>
 <p>Реализованы отчеты в XLSX и DOCX через Apache Poi.</p>

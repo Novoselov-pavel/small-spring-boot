@@ -49,7 +49,7 @@ public class HtmlNavElement {
     private final Set<MyUserAuthority> authorities = new CopyOnWriteArraySet<>();
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private HtmlNavElement parent;
 
     @JsonProperty("children")
