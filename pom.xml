@@ -25,7 +25,7 @@
 		<surefire.report.plugin>3.0.0-M3</surefire.report.plugin>
 		<opentest4j.version>1.2.0</opentest4j.version>
 		<json-simple.json.version>1.1.1</json-simple.json.version>
-		<apache.commons.lang.version>3.11</apache.commons.lang.version>
+		<apache.commons.lang.version>3.18.0</apache.commons.lang.version>
 		<appache.poi.version>4.1.2</appache.poi.version>
 		<appache.poi.bundles.version>4.1.2_1</appache.poi.bundles.version>
 	</properties>
